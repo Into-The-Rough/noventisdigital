@@ -838,16 +838,110 @@ p {
 .closing-block {
   display: grid;
   gap: 1.1rem;
+  position: relative;
+  overflow: hidden;
+  padding: 2rem;
+  border: 1px solid var(--line);
+  border-radius: 2rem;
+  background:
+    radial-gradient(circle at 78% 22%, rgba(236, 225, 210, 0.12), transparent 24%),
+    linear-gradient(180deg, rgba(255, 250, 244, 0.05), rgba(255, 250, 244, 0.02));
+  box-shadow: var(--shadow);
+}
+
+.closing-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 0.85fr);
+  gap: 2rem;
+  align-items: end;
+}
+
+.closing-copy {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 1rem;
+  max-width: 42rem;
+}
+
+.closing-text {
+  max-width: 32rem;
+  color: var(--muted-strong);
+  font-size: 1.03rem;
+}
+
+.closing-panel {
+  position: relative;
+  z-index: 1;
+  align-self: start;
+  display: grid;
+  gap: 1rem;
+  padding: 1.35rem;
+  border: 1px solid rgba(255, 245, 232, 0.12);
+  border-radius: 1.35rem;
+  background: rgba(8, 8, 11, 0.45);
+  backdrop-filter: blur(12px);
+}
+
+.closing-panel-label {
+  color: var(--muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.closing-panel-lines {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.closing-panel-lines span {
+  color: var(--text);
+  font-family: 'Fraunces', serif;
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
+.closing-wordmark {
+  grid-column: 1 / -1;
+  margin-top: 0.6rem;
+  font-family: 'Fraunces', serif;
+  font-size: clamp(4rem, 16vw, 12rem);
+  line-height: 0.82;
+  letter-spacing: -0.06em;
+  color: rgba(241, 236, 227, 0.08);
+  text-align: center;
+  user-select: none;
 }
 
 .site-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
   margin-top: 5rem;
-  padding-top: 1.6rem;
+  padding-top: 1.9rem;
   border-top: 1px solid var(--line);
+}
+
+.site-footer-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1.2rem;
+  align-items: start;
+}
+
+.site-footer-brand {
+  display: grid;
+  gap: 0.45rem;
+  max-width: 30rem;
+}
+
+.site-footer-mark {
+  color: var(--text);
+  font-size: 0.9rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.site-footer-brand p:last-child {
+  color: var(--muted);
 }
 
 .mode-badge {
@@ -1208,6 +1302,7 @@ p {
   .detail-grid,
   .portal-value-list,
   .capability-grid,
+  .closing-stage,
   .principle-grid,
   .quote-meta-grid,
   .milestone-list,
@@ -1238,6 +1333,7 @@ p {
   .site-header,
   .portal-header,
   .site-footer,
+  .site-footer-grid,
   .preview-topline,
   .portal-header-actions,
   .list-card-heading,
@@ -1291,6 +1387,19 @@ p {
   .footer-links,
   .quote-actions {
     width: 100%;
+  }
+
+  .closing-block {
+    padding: 1.35rem;
+  }
+
+  .closing-panel-lines span {
+    font-size: 1.2rem;
+  }
+
+  .closing-wordmark {
+    text-align: left;
+    font-size: clamp(3.4rem, 18vw, 7rem);
   }
 
   .capability-copy h3 {

@@ -286,28 +286,59 @@ export function HomePage() {
 
         <section className="section container">
           <div className="closing-block">
-            <p className="eyebrow">Contact</p>
-            <h2>For businesses that want experienced help across digital, AI, and transformation.</h2>
-            <div className="hero-actions">
-              <a
-                className="primary-button"
-                href="mailto:hello@noventisdigital.co.uk?subject=Portal%20and%20systems%20project"
-              >
-                hello@noventisdigital.co.uk
-              </a>
-              <Link className="ghost-button" to="/portal">
-                Open client portal
-              </Link>
+            <div className="closing-stage">
+              <div className="closing-copy">
+                <p className="eyebrow">Contact</p>
+                <h2>For businesses that want experienced help across digital, AI, and transformation.</h2>
+                <p className="closing-text">
+                  Strategy is easy to admire from a distance. The harder part is
+                  turning it into systems, delivery, and operational change that
+                  people can actually feel.
+                </p>
+                <div className="hero-actions">
+                  <a
+                    className="primary-button"
+                    href="mailto:hello@noventisdigital.co.uk?subject=Portal%20and%20systems%20project"
+                  >
+                    hello@noventisdigital.co.uk
+                  </a>
+                  <Link className="ghost-button" to="/portal">
+                    Open client portal
+                  </Link>
+                </div>
+              </div>
+
+              <div className="closing-panel">
+                <p className="closing-panel-label">Operating focus</p>
+                <div className="closing-panel-lines">
+                  <span>AI strategy</span>
+                  <span>Product design</span>
+                  <span>Transformation delivery</span>
+                </div>
+              </div>
+
+              <div aria-hidden="true" className="closing-wordmark">
+                NOVENTIS
+              </div>
             </div>
           </div>
         </section>
       </main>
 
       <footer className="site-footer container">
-        <p>NOVENTIS DIGITAL</p>
-        <div className="footer-links">
-          <a href="mailto:hello@noventisdigital.co.uk">hello@noventisdigital.co.uk</a>
-          <Link to="/portal">Client portal</Link>
+        <div className="site-footer-grid">
+          <div className="site-footer-brand">
+            <p className="site-footer-mark">NOVENTIS DIGITAL</p>
+            <p>
+              Senior digital, AI, and transformation work for businesses that
+              need substance, not theatre.
+            </p>
+          </div>
+
+          <div className="footer-links">
+            <a href="mailto:hello@noventisdigital.co.uk">hello@noventisdigital.co.uk</a>
+            <Link to="/portal">Client portal</Link>
+          </div>
         </div>
       </footer>
     </div>
