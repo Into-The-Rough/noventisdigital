@@ -2,51 +2,51 @@ import { Link } from 'react-router-dom'
 
 const capabilities = [
   {
-    title: 'AI workflow design',
+    title: 'AI strategy and workflow design',
     description:
-      'Map the handoffs, bottlenecks, and repetitive decisions that should be automated first.',
+      'Find where AI can remove friction, improve decision flow, and create measurable operational leverage.',
   },
   {
-    title: 'Private client portals',
+    title: 'Digital products and client portals',
     description:
-      'Create a secure surface for proposals, PDFs, statements of work, approvals, and delivery material.',
+      'Design and build the client-facing and internal software surfaces that make delivery feel intentional.',
   },
   {
-    title: 'Internal tools and delivery systems',
+    title: 'Business transformation delivery',
     description:
-      'Build the operating layer behind premium services so teams can move faster without looking improvised.',
+      'Translate digital strategy into working systems, clearer operations, and better execution across the business.',
   },
 ]
 
 const portalSignals = [
   'Per-client authentication',
-  'Hosted PDFs and project files',
+  'Controlled document access',
   'Scope, milestones, and commercial detail',
   'Clear next steps and approval routes',
 ]
 
 const principles = [
   {
-    title: 'Minimal outside',
+    title: 'Experienced digital judgment',
     description:
-      'The interface should feel calm, assured, and expensive rather than overloaded with components.',
+      'The work is shaped by senior thinking across product, delivery, operations, and commercial reality.',
   },
   {
-    title: 'Serious underneath',
+    title: 'AI with commercial discipline',
     description:
-      'The product layer still has to solve authentication, file access, workflow structure, and delivery friction.',
+      'AI is used where it genuinely improves throughput, clarity, or client experience, not as decoration.',
   },
   {
-    title: 'Built for use',
+    title: 'Transformation that lands',
     description:
-      'Everything should help a client move through a project more clearly, not just admire the site.',
+      'Strategy only matters if it changes the way the business actually works day to day.',
   },
 ]
 
 const ledgerItems = [
-  'Private portals',
-  'PDF delivery',
-  'AI-assisted workflow',
+  'AI strategy',
+  'Digital transformation',
+  'Client portals',
   'Operational software',
 ]
 
@@ -84,12 +84,13 @@ export function HomePage() {
       <main>
         <section className="hero-section hero-section--glass">
           <div className="container hero-column">
-            <p className="eyebrow">AI systems, client portals, delivery infrastructure</p>
-            <h1>Operational software for businesses that sell expertise.</h1>
+            <p className="eyebrow">Experienced digital leadership across AI, software, and transformation</p>
+            <h1>Digital, AI, and transformation work that changes how the business runs.</h1>
             <p className="hero-text">
-              Noventis Digital builds the layer behind premium client work:
-              private portals, AI-enabled workflows, and internal tools that make
-              delivery cleaner, faster, and more defensible.
+              Noventis Digital brings senior digital expertise to AI adoption,
+              software delivery, and business transformation. The focus is practical:
+              clearer operations, stronger client experiences, and systems teams can
+              actually use.
             </p>
 
             <div className="hero-actions">
@@ -115,20 +116,19 @@ export function HomePage() {
         <section className="section container intro-section">
           <div className="intro-grid">
             <div>
-              <p className="eyebrow">What Noventis builds</p>
-              <h2>Not brochure sites. Working systems.</h2>
+              <p className="eyebrow">Ethos</p>
+              <h2>Senior digital thinking, applied to real operating problems.</h2>
             </div>
 
             <div className="body-stack">
               <p>
-                The problem is rarely the service itself. It is usually the
-                surface clients move through: proposal delivery, scattered files,
-                weak approval flows, inconsistent handover, or internal process
-                held together with email and memory.
+                Some businesses need software. Some need AI. Most need experienced
+                judgment across process, product, delivery, and commercial reality.
               </p>
               <p>
-                Noventis Digital focuses on that layer. The outcome is a cleaner
-                client experience and a more deliberate operating model behind it.
+                Noventis Digital works at that intersection, helping organisations
+                modernise how they operate, serve clients, and turn digital change
+                into something concrete.
               </p>
             </div>
           </div>
@@ -137,7 +137,7 @@ export function HomePage() {
         <section className="section container" id="services">
           <div className="section-heading">
             <p className="eyebrow">Capabilities</p>
-            <h2>Three areas where better software changes the quality of delivery.</h2>
+            <h2>Three areas where experienced digital work creates real leverage.</h2>
           </div>
 
           <div className="capability-list">
@@ -157,11 +157,11 @@ export function HomePage() {
           <div className="portal-frame">
             <div className="portal-frame-copy">
               <p className="eyebrow">Client workspace</p>
-              <h2>A private surface for proposals, PDFs, statements of work, and delivery material.</h2>
+              <h2>A private surface for proposals, documents, statements of work, and delivery material.</h2>
               <p>
-                Instead of scattering documents across inboxes, the portal gives
-                each client a single authenticated place to review project
-                material and respond cleanly.
+                The portal is one part of a broader delivery philosophy:
+                structured communication, controlled access, and a better client
+                experience from first proposal to final handover.
               </p>
 
               <ul className="signal-list">
@@ -178,13 +178,13 @@ export function HomePage() {
             <div className="portal-preview">
               <div className="preview-topline">
                 <span>Client portal</span>
-                <span>Live documents</span>
+                <span>Private workspace</span>
               </div>
 
               <div className="preview-surface">
                 <div className="preview-document-list">
                   <button className="preview-document is-active" type="button">
-                    Watson proposal PDF
+                    Project overview
                   </button>
                   <button className="preview-document" type="button">
                     Statement of work
@@ -196,9 +196,9 @@ export function HomePage() {
 
                 <div className="preview-canvas">
                   <div className="preview-sheet">
-                    <span className="preview-sheet-label">PDF</span>
-                    <strong>Watson Proposal SOW</strong>
-                    <p>Commercial scope, timing, and delivery structure in one hosted document.</p>
+                    <span className="preview-sheet-label">Workspace</span>
+                    <strong>Client project pack</strong>
+                    <p>Scope, timing, documents, and next steps held in one controlled working surface.</p>
                   </div>
                 </div>
               </div>
@@ -209,7 +209,7 @@ export function HomePage() {
         <section className="section container" id="approach">
           <div className="section-heading">
             <p className="eyebrow">Approach</p>
-            <h2>Minimal externally. Serious under the hood.</h2>
+            <h2>Calm presentation. Serious delivery underneath.</h2>
           </div>
 
           <div className="principle-grid">
@@ -225,7 +225,7 @@ export function HomePage() {
         <section className="section container">
           <div className="closing-block">
             <p className="eyebrow">Contact</p>
-            <h2>If the service is premium, the operating layer should be too.</h2>
+            <h2>For businesses that want experienced help across digital, AI, and transformation.</h2>
             <div className="hero-actions">
               <a
                 className="primary-button"

@@ -193,5 +193,6 @@ In live mode:
 - `public/CNAME` is already set to `noventisdigital.co.uk`
 - `public/404.html` is included so `/portal` works on GitHub Pages
 - approval actions currently open email replies rather than writing back into Supabase
-- hosted PDFs for client packs should live inside `public/documents/` or another web-accessible URL; local `file:///` paths will not work for deployed users
+- do not place confidential client PDFs under `public/`; anything there is public on the web
+- for private client documents, use private storage plus signed or authenticated access rather than a static public asset
 - if you want in-app approval, I would add either a small admin backend or Supabase edge functions next
