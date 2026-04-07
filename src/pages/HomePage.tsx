@@ -2,19 +2,28 @@ import { Link } from 'react-router-dom'
 
 const capabilities = [
   {
+    kicker: 'AI',
     title: 'AI strategy and workflow design',
     description:
       'Find where AI can remove friction, improve decision flow, and create measurable operational leverage.',
+    image: '/images/ai-strategy-visual.svg',
+    alt: 'Abstract AI strategy visual with luminous network lines and flowing motion.',
   },
   {
+    kicker: 'Product',
     title: 'Digital products and client portals',
     description:
       'Design and build the client-facing and internal software surfaces that make delivery feel intentional.',
+    image: '/images/portal-systems-visual.svg',
+    alt: 'Abstract portal interface visual with layered product panels and interface geometry.',
   },
   {
+    kicker: 'Transformation',
     title: 'Business transformation delivery',
     description:
       'Translate digital strategy into working systems, clearer operations, and better execution across the business.',
+    image: '/images/transformation-visual.svg',
+    alt: 'Abstract business transformation visual with layered signals and upward movement.',
   },
 ]
 
@@ -168,16 +177,32 @@ export function HomePage() {
         </section>
 
         <section className="section container" id="services">
-          <div className="section-heading">
-            <p className="eyebrow">Capabilities</p>
-            <h2>Three areas where experienced digital work creates real leverage.</h2>
+          <div className="section-heading section-heading--split">
+            <div>
+              <p className="eyebrow">Core mandates</p>
+              <h2>AI. Product. Transformation.</h2>
+            </div>
+            <p className="section-deck">
+              Senior digital work should be felt in how the organisation decides,
+              delivers, and scales. These are the three areas where Noventis
+              creates the most leverage.
+            </p>
           </div>
 
-          <div className="capability-list">
+          <div className="capability-grid">
             {capabilities.map((capability, index) => (
-              <article className="capability-row" key={capability.title}>
-                <span className="capability-index">{`0${index + 1}`}</span>
-                <div>
+              <article className="capability-card" key={capability.title}>
+                <div className="capability-image-wrap">
+                  <img
+                    alt={capability.alt}
+                    className="capability-image"
+                    loading="lazy"
+                    src={capability.image}
+                  />
+                  <span className="capability-index">{`0${index + 1}`}</span>
+                </div>
+                <div className="capability-copy">
+                  <p className="eyebrow">{capability.kicker}</p>
                   <h3>{capability.title}</h3>
                   <p>{capability.description}</p>
                 </div>

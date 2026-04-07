@@ -430,6 +430,20 @@ p {
   padding-top: 1.6rem;
 }
 
+.section-heading--split {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: end;
+  gap: 1.5rem;
+}
+
+.section-deck {
+  max-width: 36rem;
+  justify-self: end;
+  color: var(--muted-strong);
+  font-size: 1.06rem;
+}
+
 .intro-grid,
 .portal-frame,
 .portal-login-grid,
@@ -479,32 +493,6 @@ p {
   color: var(--muted-strong);
 }
 
-.capability-list {
-  display: grid;
-}
-
-.capability-row {
-  display: grid;
-  grid-template-columns: 6rem minmax(0, 1fr);
-  gap: 1.5rem;
-  padding: 1.5rem 0;
-  border-top: 1px solid var(--line);
-  transition:
-    transform 180ms ease,
-    border-color 180ms ease,
-    background-color 180ms ease;
-}
-
-.capability-row:hover {
-  transform: translateX(10px);
-  border-color: var(--line-strong);
-  background: linear-gradient(90deg, rgba(255, 250, 244, 0.03), transparent 55%);
-}
-
-.capability-row:last-child {
-  border-bottom: 1px solid var(--line);
-}
-
 .capability-index,
 .mode-badge,
 .status-pill,
@@ -524,9 +512,83 @@ p {
   text-transform: uppercase;
 }
 
-.capability-row h3 {
-  margin-bottom: 0.45rem;
-  font-size: 1.35rem;
+.capability-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.2rem;
+  margin-top: 2rem;
+}
+
+.capability-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 1.7rem;
+  background:
+    linear-gradient(180deg, rgba(255, 250, 244, 0.06), rgba(255, 250, 244, 0.02)),
+    rgba(255, 250, 244, 0.02);
+  box-shadow: var(--shadow);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    background-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.capability-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--line-strong);
+}
+
+.capability-image-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  min-height: 18rem;
+  border: 1px solid rgba(255, 245, 232, 0.08);
+  background: #111118;
+}
+
+.capability-image {
+  width: 100%;
+  height: 100%;
+  min-height: 18rem;
+  object-fit: cover;
+  transition:
+    transform 500ms ease,
+    filter 300ms ease;
+  filter: saturate(0.95) contrast(1.05);
+}
+
+.capability-card:hover .capability-image {
+  transform: scale(1.04);
+  filter: saturate(1.05) contrast(1.08);
+}
+
+.capability-image-wrap .capability-index {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: rgba(10, 10, 13, 0.68);
+  backdrop-filter: blur(10px);
+}
+
+.capability-copy {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0.2rem 0.15rem 0.35rem;
+}
+
+.capability-copy h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 2rem;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+.capability-copy p:last-child {
+  color: var(--muted-strong);
 }
 
 .portal-frame {
@@ -1139,11 +1201,13 @@ p {
 
   .hero-ledger,
   .intro-grid,
+  .section-heading--split,
   .portal-frame,
   .portal-login-grid,
   .portal-layout,
   .detail-grid,
   .portal-value-list,
+  .capability-grid,
   .principle-grid,
   .quote-meta-grid,
   .milestone-list,
@@ -1154,6 +1218,11 @@ p {
   .hero-ledger span + span {
     border-left: 0;
     border-top: 1px solid var(--line);
+  }
+
+  .section-deck {
+    justify-self: start;
+    max-width: none;
   }
 
   .hero-aura {
@@ -1224,9 +1293,8 @@ p {
     width: 100%;
   }
 
-  .capability-row {
-    grid-template-columns: 1fr;
-    gap: 0.8rem;
+  .capability-copy h3 {
+    font-size: 1.75rem;
   }
 
   .preview-canvas,

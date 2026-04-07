@@ -1,0 +1,66 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="900" rx="48" fill="#0B0B0F"/>
+  <rect x="28" y="28" width="1144" height="844" rx="36" fill="url(#bg)"/>
+  <g opacity="0.22">
+    <path d="M93 110H1107" stroke="#E8DDCE"/>
+    <path d="M93 250H1107" stroke="#E8DDCE"/>
+    <path d="M93 390H1107" stroke="#E8DDCE"/>
+    <path d="M93 530H1107" stroke="#E8DDCE"/>
+    <path d="M93 670H1107" stroke="#E8DDCE"/>
+    <path d="M93 810H1107" stroke="#E8DDCE"/>
+    <path d="M170 80V820" stroke="#E8DDCE"/>
+    <path d="M400 80V820" stroke="#E8DDCE"/>
+    <path d="M630 80V820" stroke="#E8DDCE"/>
+    <path d="M860 80V820" stroke="#E8DDCE"/>
+    <path d="M1090 80V820" stroke="#E8DDCE"/>
+  </g>
+  <circle cx="350" cy="468" r="202" fill="url(#glow)" opacity="0.9"/>
+  <circle cx="794" cy="354" r="144" fill="url(#glowTwo)" opacity="0.75"/>
+  <path d="M159 592C245 508 334 488 432 472C565 450 635 392 708 292C768 210 841 159 1010 152" stroke="url(#lineOne)" stroke-width="3"/>
+  <path d="M173 656C263 596 357 600 488 592C613 585 711 544 802 451C872 379 934 332 1016 318" stroke="url(#lineTwo)" stroke-width="2"/>
+  <path d="M145 348C209 301 290 281 385 282C514 283 602 251 693 181C772 120 861 93 1014 102" stroke="url(#lineThree)" stroke-width="2"/>
+  <g filter="url(#blur)">
+    <circle cx="345" cy="468" r="14" fill="#FFF6EA"/>
+    <circle cx="535" cy="429" r="10" fill="#E8DDCE"/>
+    <circle cx="709" cy="292" r="10" fill="#FFF6EA"/>
+    <circle cx="820" cy="170" r="8" fill="#FFF6EA"/>
+    <circle cx="806" cy="448" r="12" fill="#E8DDCE"/>
+    <circle cx="1010" cy="152" r="9" fill="#FFF6EA"/>
+  </g>
+  <rect x="156" y="120" width="190" height="52" rx="26" fill="#131319" stroke="#F1E7D8" stroke-opacity="0.22"/>
+  <text x="191" y="153" fill="#E8DDCE" font-family="Manrope, Arial, sans-serif" font-size="20" letter-spacing="0.28em">AI SIGNALS</text>
+  <defs>
+    <linearGradient id="bg" x1="600" y1="28" x2="600" y2="872" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111118"/>
+      <stop offset="1" stop-color="#0C0C11"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(350 468) rotate(90) scale(202)">
+      <stop stop-color="#D7B68F" stop-opacity="0.46"/>
+      <stop offset="1" stop-color="#D7B68F" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowTwo" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(794 354) rotate(90) scale(144)">
+      <stop stop-color="#8AA0D8" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#8AA0D8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lineOne" x1="159" y1="372" x2="1010" y2="372" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7A6855"/>
+      <stop offset="0.55" stop-color="#F0E3D2"/>
+      <stop offset="1" stop-color="#8AA0D8"/>
+    </linearGradient>
+    <linearGradient id="lineTwo" x1="173" y1="487" x2="1016" y2="487" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4E4338"/>
+      <stop offset="0.5" stop-color="#E8DDCE"/>
+      <stop offset="1" stop-color="#7A6855"/>
+    </linearGradient>
+    <linearGradient id="lineThree" x1="145" y1="225" x2="1014" y2="225" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8AA0D8"/>
+      <stop offset="0.48" stop-color="#E8DDCE"/>
+      <stop offset="1" stop-color="#7A6855"/>
+    </linearGradient>
+    <filter id="blur" x="327" y="144" width="692" height="338" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur stdDeviation="3" result="effect1_foregroundBlur_0_1"/>
+    </filter>
+  </defs>
+</svg>
