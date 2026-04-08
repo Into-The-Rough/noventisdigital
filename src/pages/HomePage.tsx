@@ -113,14 +113,21 @@ export function HomePage() {
             <p className="eyebrow motion-reveal motion-reveal--1">
               Experienced digital leadership across AI, software, and transformation
             </p>
-            <h1 className="motion-reveal motion-reveal--2">
-              Digital, AI, and transformation work that changes how the business runs.
+            <h1 className="hero-title" aria-label="Experienced digital leadership for the AI era">
+              <span className="hero-title-line">
+                <span className="motion-clip motion-clip--1">Experienced digital</span>
+              </span>
+              <span className="hero-title-line">
+                <span className="motion-clip motion-clip--2">leadership</span>
+              </span>
+              <span className="hero-title-line">
+                <span className="motion-clip motion-clip--3">for the AI era.</span>
+              </span>
             </h1>
             <p className="hero-text motion-reveal motion-reveal--3">
-              Noventis Digital brings senior digital expertise to AI adoption,
-              software delivery, and business transformation. The focus is practical:
-              clearer operations, stronger client experiences, and systems teams can
-              actually use.
+              AI strategy, digital product thinking, and business transformation
+              for organisations that need sharper systems, stronger delivery, and
+              real operational change.
             </p>
 
             <div className="hero-actions motion-reveal motion-reveal--4">
