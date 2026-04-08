@@ -3,70 +3,67 @@ import { Link } from 'react-router-dom'
 const capabilities = [
   {
     kicker: 'AI',
-    title: 'AI strategy and workflow design',
+    title: 'AI-powered solutions and workflow design',
     description:
-      'Find where AI can remove friction, improve decision flow, and create measurable operational leverage.',
+      'Find where AI can remove friction, improve decision flow, and create practical leverage inside the way the business operates.',
     image: '/images/ai-strategy-visual.svg',
     alt: 'Abstract AI strategy visual with luminous network lines and flowing motion.',
   },
   {
-    kicker: 'Product',
-    title: 'Digital products and client portals',
+    kicker: 'Leadership',
+    title: 'Fractional CTO and technology direction',
     description:
-      'Design and build the client-facing and internal software surfaces that make delivery feel intentional.',
+      'Bring senior technical judgment into strategy, architecture, delivery, hiring, and executive decision making without building a full internal technology function.',
     image: '/images/portal-systems-visual.svg',
-    alt: 'Abstract portal interface visual with layered product panels and interface geometry.',
+    alt: 'Abstract leadership visual with layered interface geometry and directional movement.',
   },
   {
     kicker: 'Transformation',
-    title: 'Business transformation delivery',
+    title: 'Transformation that changes operations',
     description:
-      'Translate digital strategy into working systems, clearer operations, and better execution across the business.',
+      'Turn strategy into better systems, stronger operating rhythm, clearer accountability, and delivery the organisation can actually feel.',
     image: '/images/transformation-visual.svg',
     alt: 'Abstract business transformation visual with layered signals and upward movement.',
   },
 ]
 
-const portalSignals = [
-  'Per-client authentication',
-  'Controlled document access',
-  'Scope, milestones, and commercial detail',
-  'Clear next steps and approval routes',
-]
-
 const principles = [
   {
-    title: 'Experienced digital judgment',
+    title: 'Executive-level perspective',
     description:
-      'The work is shaped by senior thinking across product, delivery, operations, and commercial reality.',
+      'Decisions are shaped across strategy, architecture, delivery, operations, and commercial reality rather than from a narrow delivery lane.',
   },
   {
-    title: 'AI with commercial discipline',
+    title: 'AI with operating value',
     description:
-      'AI is used where it genuinely improves throughput, clarity, or client experience, not as decoration.',
+      'AI is applied where it improves throughput, clarity, decision making, or client experience, not where it merely sounds current.',
   },
   {
-    title: 'Transformation that lands',
+    title: 'Delivery that survives reality',
     description:
-      'Strategy only matters if it changes the way the business actually works day to day.',
+      'The work has to function inside the messiness of a real business, not just read well in a strategy deck.',
   },
 ]
 
 const ledgerItems = [
-  'AI strategy',
-  'Digital transformation',
-  'Client portals',
-  'Operational software',
+  'AI solutions',
+  'Fractional CTO',
+  'Tech leadership',
+  'Transformation',
 ]
 
 const ribbonItems = [
-  'AI strategy',
-  'Business transformation',
-  'Digital products',
-  'Client experience',
-  'Automation design',
-  'Operational software',
+  'AI-powered solutions',
+  'Fractional CTO',
+  'Technology strategy',
+  'Operational transformation',
+  'Architecture direction',
+  'Delivery leadership',
 ]
+
+const introSignals = ['CTO', 'AI', 'Scale']
+
+const approachSignals = ['Board', 'Build', 'Change']
 
 export function HomePage() {
   return (
@@ -76,14 +73,14 @@ export function HomePage() {
           <span aria-hidden="true" className="brand-mark" />
           <span className="brand-copy">
             <strong>NOVENTIS</strong>
-            <span>Digital systems and client infrastructure</span>
+            <span>AI-powered solutions and executive technology leadership</span>
           </span>
         </Link>
 
         <nav aria-label="Primary" className="top-nav">
           <a href="#services">Capabilities</a>
-          <a href="#portal">Portal</a>
           <a href="#approach">Approach</a>
+          <a href="#contact">Contact</a>
         </nav>
 
         <div className="header-actions">
@@ -111,23 +108,26 @@ export function HomePage() {
             </div>
 
             <p className="eyebrow motion-reveal motion-reveal--1">
-              Experienced digital leadership across AI, software, and transformation
+              Fractional CTO advisory, AI strategy, and transformation delivery
             </p>
-            <h1 className="hero-title" aria-label="Experienced digital leadership for the AI era">
+            <h1
+              className="hero-title"
+              aria-label="AI-powered solutions with executive technology leadership"
+            >
               <span className="hero-title-line">
-                <span className="motion-clip motion-clip--1">Experienced digital</span>
+                <span className="motion-clip motion-clip--1">AI-powered solutions</span>
               </span>
               <span className="hero-title-line">
-                <span className="motion-clip motion-clip--2">leadership</span>
+                <span className="motion-clip motion-clip--2">with executive</span>
               </span>
               <span className="hero-title-line">
-                <span className="motion-clip motion-clip--3">for the AI era.</span>
+                <span className="motion-clip motion-clip--3">technology leadership.</span>
               </span>
             </h1>
             <p className="hero-text motion-reveal motion-reveal--3">
-              AI strategy, digital product thinking, and business transformation
-              for organisations that need sharper systems, stronger delivery, and
-              real operational change.
+              Noventis brings executive-level technology judgment to AI strategy,
+              product direction, architecture, and transformation so the business
+              gets sharper systems, stronger delivery, and practical change.
             </p>
 
             <div className="hero-actions motion-reveal motion-reveal--4">
@@ -163,36 +163,56 @@ export function HomePage() {
         </section>
 
         <section className="section container intro-section">
-          <div className="intro-grid">
-            <div>
-              <p className="eyebrow">Ethos</p>
-              <h2>Senior digital thinking, applied to real operating problems.</h2>
+          <div className="intro-shell">
+            <div className="intro-grid">
+              <div>
+                <p className="eyebrow">Ethos</p>
+                <h2>Senior technology judgment, applied where the business actually moves.</h2>
+              </div>
+
+              <div className="body-stack">
+                <p>
+                  This is not generic digital support. It is hands-on CTO-level
+                  thinking for organisations working through AI adoption, product
+                  decisions, delivery pressure, and operational complexity.
+                </p>
+                <p>
+                  The work spans AI-powered solutions, technology strategy,
+                  architecture, delivery leadership, and the executive decisions
+                  that determine whether change sticks.
+                </p>
+              </div>
             </div>
 
-            <div className="body-stack">
-              <p>
-                Some businesses need software. Some need AI. Most need experienced
-                judgment across process, product, delivery, and commercial reality.
-              </p>
-              <p>
-                Noventis Digital works at that intersection, helping organisations
-                modernise how they operate, serve clients, and turn digital change
-                into something concrete.
-              </p>
+            <div aria-hidden="true" className="ambient-panel ambient-panel--intro">
+              <span className="ambient-orbit ambient-orbit--large" />
+              <span className="ambient-orbit ambient-orbit--small" />
+              <span className="ambient-pulse ambient-pulse--one" />
+              <span className="ambient-pulse ambient-pulse--two" />
+              {introSignals.map((signal, index) => (
+                <span className={`ambient-chip ambient-chip--${index + 1}`} key={signal}>
+                  {signal}
+                </span>
+              ))}
             </div>
           </div>
         </section>
 
         <section className="section container" id="services">
-          <div className="section-heading section-heading--split">
+          <div className="section-heading section-heading--split section-heading--ambient">
+            <div aria-hidden="true" className="section-aura section-aura--services">
+              <span className="section-aura-ring section-aura-ring--outer" />
+              <span className="section-aura-ring section-aura-ring--inner" />
+              <span className="section-aura-dot section-aura-dot--one" />
+              <span className="section-aura-dot section-aura-dot--two" />
+            </div>
             <div>
               <p className="eyebrow">Core mandates</p>
-              <h2>AI. Product. Transformation.</h2>
+              <h2>AI solutions. Technology leadership. Transformation.</h2>
             </div>
             <p className="section-deck">
-              Senior digital work should be felt in how the organisation decides,
-              delivers, and scales. These are the three areas where Noventis
-              creates the most leverage.
+              These are the areas where experienced technical leadership creates
+              disproportionate leverage across the organisation.
             </p>
           </div>
 
@@ -218,67 +238,19 @@ export function HomePage() {
           </div>
         </section>
 
-        <section className="section container" id="portal">
-          <div className="portal-frame">
-            <div className="portal-frame-copy">
-              <p className="eyebrow">Client workspace</p>
-              <h2>A private surface for proposals, documents, statements of work, and delivery material.</h2>
-              <p>
-                The portal is one part of a broader delivery philosophy:
-                structured communication, controlled access, and a better client
-                experience from first proposal to final handover.
-              </p>
-
-              <ul className="signal-list">
-                {portalSignals.map((signal) => (
-                  <li key={signal}>{signal}</li>
-                ))}
-              </ul>
-
-              <Link className="primary-button" to="/portal">
-                Enter the portal
-              </Link>
-            </div>
-
-            <div className="portal-preview">
-              <div className="preview-topline">
-                <span>Client portal</span>
-                <span>Private workspace</span>
-              </div>
-
-              <div className="preview-surface">
-                <div aria-hidden="true" className="preview-pulse" />
-                <div className="preview-document-list">
-                  <button className="preview-document is-active" type="button">
-                    Project overview
-                  </button>
-                  <button className="preview-document" type="button">
-                    Statement of work
-                  </button>
-                  <button className="preview-document" type="button">
-                    Delivery notes
-                  </button>
-                </div>
-
-                <div className="preview-canvas">
-                  <div className="preview-sheet">
-                    <span className="preview-sheet-label">Workspace</span>
-                    <strong>Client project pack</strong>
-                    <p>Scope, timing, documents, and next steps held in one controlled working surface.</p>
-                    <div className="preview-progress">
-                      <span />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <section className="section container" id="approach">
-          <div className="section-heading">
+          <div className="section-heading section-heading--ambient">
+            <div aria-hidden="true" className="section-aura section-aura--approach">
+              <span className="section-aura-ring section-aura-ring--outer" />
+              <span className="section-aura-ring section-aura-ring--inner" />
+              {approachSignals.map((signal, index) => (
+                <span className={`section-aura-chip section-aura-chip--${index + 1}`} key={signal}>
+                  {signal}
+                </span>
+              ))}
+            </div>
             <p className="eyebrow">Approach</p>
-            <h2>Calm presentation. Serious delivery underneath.</h2>
+            <h2>Measured presentation. Decisive execution underneath.</h2>
           </div>
 
           <div className="principle-grid">
@@ -291,16 +263,19 @@ export function HomePage() {
           </div>
         </section>
 
-        <section className="section container">
+        <section className="section container" id="contact">
           <div className="closing-block">
             <div className="closing-stage">
               <div className="closing-copy">
                 <p className="eyebrow">Contact</p>
-                <h2>For businesses that want experienced help across digital, AI, and transformation.</h2>
+                <h2>
+                  For leadership teams that need stronger AI capability, sharper
+                  technology direction, and real operating progress.
+                </h2>
                 <p className="closing-text">
-                  Strategy is easy to admire from a distance. The harder part is
-                  turning it into systems, delivery, and operational change that
-                  people can actually feel.
+                  The value is not theatre. It is clear thinking, experienced
+                  leadership, and delivery that changes how the organisation
+                  actually runs.
                 </p>
                 <div className="hero-actions">
                   <a
@@ -318,8 +293,8 @@ export function HomePage() {
               <div className="closing-panel">
                 <p className="closing-panel-label">Operating focus</p>
                 <div className="closing-panel-lines">
-                  <span>AI strategy</span>
-                  <span>Product design</span>
+                  <span>AI solutions</span>
+                  <span>Technology direction</span>
                   <span>Transformation delivery</span>
                 </div>
               </div>
@@ -337,8 +312,8 @@ export function HomePage() {
           <div className="site-footer-brand">
             <p className="site-footer-mark">NOVENTIS DIGITAL</p>
             <p>
-              Senior digital, AI, and transformation work for businesses that
-              need substance, not theatre.
+              AI-powered solutions and executive technology leadership for
+              businesses that need substance, not theatre.
             </p>
           </div>
 
