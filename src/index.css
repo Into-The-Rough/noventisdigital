@@ -594,13 +594,13 @@ p {
 }
 
 .intro-grid {
-  grid-template-columns: minmax(16rem, 0.72fr) minmax(0, 1.28fr);
+  grid-template-columns: minmax(13rem, 0.58fr) minmax(0, 1.42fr);
   align-items: start;
-  gap: 2.2rem;
+  gap: 3rem;
 }
 
 .intro-lead {
-  max-width: 18rem;
+  max-width: 14rem;
 }
 
 .ambient-panel {
@@ -714,10 +714,18 @@ p {
   max-width: 18ch !important;
 }
 
+.intro-title {
+  max-width: 8ch !important;
+}
+
 .body-stack {
   display: grid;
   gap: 1rem;
   max-width: 38rem;
+}
+
+.body-stack--intro {
+  padding-top: 0.85rem;
 }
 
 .body-stack p,
@@ -1447,6 +1455,10 @@ p {
   .section-deck {
     justify-self: start;
     max-width: none;
+  }
+
+  .body-stack--intro {
+    padding-top: 0;
   }
 
   .section-heading--ambient {

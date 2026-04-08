@@ -154,12 +154,12 @@ export function HomePage() {
             <div className="intro-grid">
               <div className="intro-lead">
                 <p className="eyebrow">About</p>
-                <h2 className="section-title-wide">
+                <h2 className="section-title-wide intro-title">
                   Built in production.
                 </h2>
               </div>
 
-              <div className="body-stack">
+              <div className="body-stack body-stack--intro">
                 <p>
                   I&apos;ve spent the last few years putting AI into production
                   inside a real business, not a lab. Noventis is where I do the
