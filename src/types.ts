@@ -32,6 +32,8 @@ export type Milestone = {
 
 export type QuoteAttachment = {
   label: string
+  // `url` can be a normal URL or a private storage reference like
+  // `storage://client-documents/<auth-user-id>/file.pdf`
   url: string
   kind: QuoteAttachmentKind
   description?: string

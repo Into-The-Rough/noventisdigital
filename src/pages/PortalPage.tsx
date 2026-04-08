@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { demoCredentials } from '../data/demoPortal'
 import { formatCurrency, formatDate } from '../lib/formatting'
+import { resolveDocumentAssetUrl } from '../lib/portalService'
 import type {
   PortalClient,
   PortalMode,
@@ -34,6 +35,10 @@ function isPdf(document: QuoteAttachment) {
   return document.kind === 'pdf' || document.url.toLowerCase().endsWith('.pdf')
 }
 
+function getDocumentKey(document: QuoteAttachment) {
+  return `${document.kind}:${document.url}:${document.label}`
+}
+
 export function PortalPage({
   client,
   quotes,
@@ -54,7 +59,12 @@ export function PortalPage({
   const [authPending, setAuthPending] = useState(false)
   const [signOutPending, setSignOutPending] = useState(false)
   const [selectedQuoteId, setSelectedQuoteId] = useState<string | null>(null)
-  const [selectedDocumentUrl, setSelectedDocumentUrl] = useState<string | null>(null)
+  const [selectedDocumentKey, setSelectedDocumentKey] = useState<string | null>(null)
+  const [selectedDocumentAssetUrl, setSelectedDocumentAssetUrl] = useState<string | null>(
+    null,
+  )
+  const [documentLoading, setDocumentLoading] = useState(false)
+  const [documentError, setDocumentError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!quotes.length) {
@@ -74,21 +84,80 @@ export function PortalPage({
 
   useEffect(() => {
     if (!selectedQuote?.documents.length) {
-      setSelectedDocumentUrl(null)
+      setSelectedDocumentKey(null)
       return
     }
 
-    setSelectedDocumentUrl((current) =>
-      current && selectedQuote.documents.some((document) => document.url === current)
+    setSelectedDocumentKey((current) =>
+      current &&
+      selectedQuote.documents.some((document) => getDocumentKey(document) === current)
         ? current
-        : selectedQuote.documents[0].url,
+        : getDocumentKey(selectedQuote.documents[0]),
     )
   }, [selectedQuote])
 
   const selectedDocument =
-    selectedQuote?.documents.find((document) => document.url === selectedDocumentUrl) ??
+    selectedQuote?.documents.find(
+      (document) => getDocumentKey(document) === selectedDocumentKey,
+    ) ??
     selectedQuote?.documents[0] ??
     null
+  const activeDocumentKey = selectedDocument ? getDocumentKey(selectedDocument) : null
+
+  useEffect(() => {
+    let isActive = true
+    let objectUrlToRevoke: string | null = null
+
+    if (!selectedDocument) {
+      setSelectedDocumentAssetUrl(null)
+      setDocumentError(null)
+      setDocumentLoading(false)
+      return () => {}
+    }
+
+    setDocumentLoading(true)
+    setDocumentError(null)
+    setSelectedDocumentAssetUrl(null)
+
+    void resolveDocumentAssetUrl(selectedDocument)
+      .then((asset) => {
+        if (!isActive) {
+          if (asset.revokeOnDispose) {
+            URL.revokeObjectURL(asset.url)
+          }
+
+          return
+        }
+
+        objectUrlToRevoke = asset.revokeOnDispose ? asset.url : null
+        setSelectedDocumentAssetUrl(asset.url)
+      })
+      .catch((error) => {
+        if (!isActive) {
+          return
+        }
+
+        setSelectedDocumentAssetUrl(null)
+        setDocumentError(
+          error instanceof Error
+            ? error.message
+            : 'Unable to load that document right now.',
+        )
+      })
+      .finally(() => {
+        if (isActive) {
+          setDocumentLoading(false)
+        }
+      })
+
+    return () => {
+      isActive = false
+
+      if (objectUrlToRevoke) {
+        URL.revokeObjectURL(objectUrlToRevoke)
+      }
+    }
+  }, [selectedDocument])
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -233,16 +302,16 @@ export function PortalPage({
 
             <div className="portal-value-list">
               <article className="benefit-card benefit-card--kinetic">
-                <h3>Hosted project documents</h3>
-                <p>Attach statements of work, proposals and supporting PDF packs.</p>
+                <h3>Private project documents</h3>
+                <p>Statements of work, proposals and PDF packs stay behind portal auth.</p>
               </article>
               <article className="benefit-card benefit-card--kinetic">
                 <h3>Per-client visibility</h3>
                 <p>Each client only sees the material attached to their own account.</p>
               </article>
               <article className="benefit-card benefit-card--kinetic">
-                <h3>Static frontend, secure data layer</h3>
-                <p>GitHub Pages serves the interface while Supabase handles access.</p>
+                <h3>Static frontend, private storage</h3>
+                <p>GitHub Pages serves the interface while Supabase handles auth and files.</p>
               </article>
             </div>
           </section>
@@ -349,10 +418,12 @@ export function PortalPage({
                         {selectedQuote.documents.map((document) => (
                           <button
                             className={`document-card ${
-                              document.url === selectedDocument?.url ? 'is-active' : ''
+                              getDocumentKey(document) === activeDocumentKey
+                                ? 'is-active'
+                                : ''
                             }`}
-                            key={`${document.label}-${document.url}`}
-                            onClick={() => setSelectedDocumentUrl(document.url)}
+                            key={getDocumentKey(document)}
+                            onClick={() => setSelectedDocumentKey(getDocumentKey(document))}
                             type="button"
                           >
                             <span className="document-badge">{document.kind}</span>
@@ -368,18 +439,33 @@ export function PortalPage({
                     <section className="detail-card pdf-preview-card">
                       <div className="section-card-heading">
                         <h3>{selectedDocument.label}</h3>
-                        <a
-                          className="ghost-button"
-                          href={selectedDocument.url}
-                          rel="noreferrer"
-                          target="_blank"
-                        >
-                          Open full PDF
-                        </a>
+                        {selectedDocumentAssetUrl ? (
+                          <a
+                            className="ghost-button"
+                            href={selectedDocumentAssetUrl}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            Open full PDF
+                          </a>
+                        ) : null}
                       </div>
 
                       <div className="pdf-frame-wrap">
-                        <iframe src={selectedDocument.url} title={selectedDocument.label} />
+                        {documentLoading ? (
+                          <div className="loading-panel">Loading document...</div>
+                        ) : documentError ? (
+                          <div className="error-banner">{documentError}</div>
+                        ) : selectedDocumentAssetUrl ? (
+                          <iframe
+                            src={selectedDocumentAssetUrl}
+                            title={selectedDocument.label}
+                          />
+                        ) : (
+                          <div className="empty-state">
+                            This document is attached, but could not be loaded yet.
+                          </div>
+                        )}
                       </div>
                     </section>
                   ) : null}

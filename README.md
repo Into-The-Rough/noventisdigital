@@ -175,6 +175,19 @@ SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... npm run quote:upsert -- \
 
 That script looks up the client by email, then inserts or updates the record in `public.quotes`.
 
+For private client PDFs, set each document URL to a storage reference rather than a web URL:
+
+```json
+{
+  "label": "Proposal pack",
+  "kind": "pdf",
+  "url": "storage://client-documents/<auth-user-id>/proposal-pack.pdf",
+  "description": "Private portal document"
+}
+```
+
+The portal resolves that reference through authenticated Supabase Storage access at runtime.
+
 Script file:
 
 - [scripts/upsert-quote.mjs](/mnt/c/Users/john/Documents/sites/noventisdigital/scripts/upsert-quote.mjs)
@@ -186,6 +199,7 @@ In live mode:
 - clients authenticate with Supabase Auth
 - the app loads their profile from `client_profiles`
 - the app loads only records where `auth_user_id = auth.uid()`
+- document assets should live in the private `client-documents` storage bucket, not under `public/`
 - the portal stays compatible with GitHub Pages because the secure data layer lives in Supabase, not in the static host
 
 ## Notes

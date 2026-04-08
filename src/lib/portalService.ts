@@ -42,6 +42,11 @@ type ClientProfileRow = {
 
 export const portalMode: PortalMode = hasSupabase ? 'live' : 'demo'
 
+type ResolvedDocumentAsset = {
+  url: string
+  revokeOnDispose: boolean
+}
+
 function deriveNameFromEmail(email: string | undefined) {
   if (!email) {
     return 'Client'
@@ -158,6 +163,28 @@ function normaliseDocuments(documents: QuoteAttachment[] | null | undefined) {
   }))
 }
 
+function parseStorageDocumentUrl(url: string) {
+  if (!url.startsWith('storage://')) {
+    return null
+  }
+
+  const reference = url.slice('storage://'.length)
+  const slashIndex = reference.indexOf('/')
+
+  if (slashIndex === -1) {
+    return null
+  }
+
+  const bucket = reference.slice(0, slashIndex)
+  const path = reference.slice(slashIndex + 1)
+
+  if (!bucket || !path) {
+    return null
+  }
+
+  return { bucket, path }
+}
+
 function normaliseQuote(row: QuoteRow): QuoteDocument {
   return {
     id: row.id,
@@ -272,6 +299,36 @@ export async function getQuotesForClient(
   }
 
   return demoQuotes.filter((quote) => quote.clientId === clientId)
+}
+
+export async function resolveDocumentAssetUrl(
+  document: QuoteAttachment,
+): Promise<ResolvedDocumentAsset> {
+  const storageReference = parseStorageDocumentUrl(document.url)
+
+  if (storageReference) {
+    if (!supabase) {
+      throw new Error('Secure document access is not available right now.')
+    }
+
+    const { data, error } = await supabase.storage
+      .from(storageReference.bucket)
+      .download(storageReference.path)
+
+    if (error) {
+      throw error
+    }
+
+    return {
+      url: URL.createObjectURL(data),
+      revokeOnDispose: true,
+    }
+  }
+
+  return {
+    url: document.url,
+    revokeOnDispose: false,
+  }
 }
 
 export function subscribeToAuth(

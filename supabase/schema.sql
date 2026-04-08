@@ -120,6 +120,26 @@ set
 alter table public.client_profiles enable row level security;
 alter table public.quotes enable row level security;
 
+insert into storage.buckets (
+  id,
+  name,
+  public,
+  file_size_limit,
+  allowed_mime_types
+)
+values (
+  'client-documents',
+  'client-documents',
+  false,
+  10485760,
+  array['application/pdf']
+)
+on conflict (id) do update
+set
+  public = excluded.public,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
+
 drop policy if exists "Clients can view own profile" on public.client_profiles;
 drop policy if exists "Clients can update own profile" on public.client_profiles;
 drop policy if exists "Service role can manage profiles" on public.client_profiles;
@@ -143,6 +163,8 @@ with check (auth.role() = 'service_role');
 
 drop policy if exists "Clients can view own quotes" on public.quotes;
 drop policy if exists "Service role can manage quotes" on public.quotes;
+drop policy if exists "Clients can view own storage documents" on storage.objects;
+drop policy if exists "Service role can manage storage documents" on storage.objects;
 
 create policy "Clients can view own quotes"
 on public.quotes
@@ -154,6 +176,22 @@ on public.quotes
 for all
 using (auth.role() = 'service_role')
 with check (auth.role() = 'service_role');
+
+create policy "Clients can view own storage documents"
+on storage.objects
+for select
+to authenticated
+using (
+  bucket_id = 'client-documents'
+  and (storage.foldername(name))[1] = auth.uid()::text
+);
+
+create policy "Service role can manage storage documents"
+on storage.objects
+for all
+to service_role
+using (bucket_id = 'client-documents')
+with check (bucket_id = 'client-documents');
 
 comment on table public.client_profiles is 'Client directory rows used by the Noventis Digital portal.';
 comment on table public.quotes is 'Client-facing quote records surfaced in the Noventis Digital portal.';
