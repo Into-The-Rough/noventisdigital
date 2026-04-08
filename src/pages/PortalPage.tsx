@@ -150,28 +150,13 @@ export function PortalPage({
       <main className="container">
         {!client ? (
           <section className="portal-login-grid portal-login-grid--kinetic">
-            <div className="portal-login-side">
+            <div className="portal-login-copy">
               <p className="eyebrow">Private client access</p>
               <h1>Private project material. One secure surface.</h1>
               <p>
                 The portal is designed for proposals, PDFs, statements of work,
                 and delivery notes without the usual email sprawl.
               </p>
-
-              <div className="portal-value-list">
-                <article className="benefit-card benefit-card--kinetic">
-                  <h3>Hosted project documents</h3>
-                  <p>Attach statements of work, proposals and supporting PDF packs.</p>
-                </article>
-                <article className="benefit-card benefit-card--kinetic">
-                  <h3>Per-client visibility</h3>
-                  <p>Each client only sees the material attached to their own account.</p>
-                </article>
-                <article className="benefit-card benefit-card--kinetic">
-                  <h3>Static frontend, secure data layer</h3>
-                  <p>GitHub Pages serves the interface while Supabase handles access.</p>
-                </article>
-              </div>
             </div>
 
             <div className="portal-login-card portal-login-card--kinetic">
@@ -244,6 +229,21 @@ export function PortalPage({
                   </div>
                 </div>
               ) : null}
+            </div>
+
+            <div className="portal-value-list">
+              <article className="benefit-card benefit-card--kinetic">
+                <h3>Hosted project documents</h3>
+                <p>Attach statements of work, proposals and supporting PDF packs.</p>
+              </article>
+              <article className="benefit-card benefit-card--kinetic">
+                <h3>Per-client visibility</h3>
+                <p>Each client only sees the material attached to their own account.</p>
+              </article>
+              <article className="benefit-card benefit-card--kinetic">
+                <h3>Static frontend, secure data layer</h3>
+                <p>GitHub Pages serves the interface while Supabase handles access.</p>
+              </article>
             </div>
           </section>
         ) : (

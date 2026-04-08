@@ -467,7 +467,7 @@ p {
 .section-heading h2,
 .portal-frame-copy h2,
 .closing-block h2,
-.portal-login-side h1,
+.portal-login-copy h1,
 .portal-login-card h2,
 .quote-detail h1 {
   font-size: clamp(2rem, 4.6vw, 4rem);
@@ -968,11 +968,14 @@ p {
 
 .portal-login-grid {
   grid-template-columns: minmax(0, 1fr) minmax(360px, 0.9fr);
+  grid-template-areas:
+    'copy card'
+    'values card';
   align-items: start;
   padding-top: 4rem;
 }
 
-.portal-login-side,
+.portal-login-copy,
 .portal-main,
 .portal-aside,
 .login-form {
@@ -980,7 +983,16 @@ p {
   gap: 1rem;
 }
 
+.portal-login-copy {
+  grid-area: copy;
+}
+
+.portal-login-card {
+  grid-area: card;
+}
+
 .portal-value-list {
+  grid-area: values;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
@@ -1330,8 +1342,13 @@ p {
     font-size: 0.68rem;
   }
 
-  .site-header,
-  .portal-header,
+  .portal-login-grid {
+    grid-template-areas:
+      'copy'
+      'card'
+      'values';
+  }
+
   .site-footer,
   .site-footer-grid,
   .preview-topline,
@@ -1353,11 +1370,26 @@ p {
 
   .site-header,
   .portal-header {
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
     padding-block: 1rem;
   }
 
   .brand-copy span {
     display: none;
+  }
+
+  .site-header .header-actions .ghost-button,
+  .portal-header .mode-badge {
+    display: none;
+  }
+
+  .header-actions,
+  .portal-header-actions {
+    width: auto;
+    gap: 0.6rem;
+    justify-content: flex-end;
   }
 
   .hero-column {
@@ -1375,18 +1407,78 @@ p {
   .section-heading h2,
   .portal-frame-copy h2,
   .closing-block h2,
-  .portal-login-side h1,
+  .portal-login-copy h1,
   .portal-login-card h2,
   .quote-detail h1 {
-    font-size: 2.7rem;
+    font-size: 2.45rem;
   }
 
   .header-actions,
-  .portal-header-actions,
   .hero-actions,
   .footer-links,
   .quote-actions {
     width: 100%;
+  }
+
+  .hero-actions,
+  .footer-links,
+  .quote-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-actions .primary-button,
+  .hero-actions .ghost-button,
+  .quote-actions .primary-button,
+  .quote-actions .ghost-button {
+    width: 100%;
+  }
+
+  .portal-header-actions {
+    width: auto;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .portal-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .portal-main {
+    order: -1;
+  }
+
+  .portal-value-list {
+    gap: 0.8rem;
+  }
+
+  .benefit-card {
+    min-height: auto;
+  }
+
+  .capability-image-wrap,
+  .capability-image {
+    min-height: 14rem;
+  }
+
+  .hero-ledger {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero-ledger span {
+    border-top: 0;
+  }
+
+  .hero-ledger span + span {
+    border-left: 0;
+  }
+
+  .hero-ledger span:nth-child(2n) {
+    border-left: 1px solid var(--line);
+  }
+
+  .hero-ledger span:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
   }
 
   .closing-block {
