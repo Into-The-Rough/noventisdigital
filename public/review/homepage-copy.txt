@@ -90,7 +90,7 @@ Principle 3
 Contact section
 - Eyebrow: Get in touch
 - Heading: If this sounds like the right fit, send a note.
-- Supporting copy: A short message about where you are and what's stuck is enough to start. First call is 30 minutes, free, and either ends with a clear next step or an honest "this isn't for me, here's who you should talk to instead."
+- Supporting copy: A short message about where you are and what's stuck is enough to start. No obligations, and it either ends with a clear next step or an honest "this isn't for me, here's who you should talk to instead."
 - Primary CTA: hello@noventisdigital.co.uk
 - Secondary CTA: Book a call
 - Closing panel lines: Audit & Roadmap / Build / Support & Evolve

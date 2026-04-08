@@ -271,7 +271,7 @@ export function HomePage() {
                 <h2 className="section-title-wide">If this sounds like the right fit, send a note.</h2>
                 <p className="closing-text">
                   A short message about where you are and what&apos;s stuck is
-                  enough to start. First call is 30 minutes, free, and either
+                  enough to start. No obligations, and it either
                   ends with a clear next step or an honest &quot;this isn&apos;t for
                   me, here&apos;s who you should talk to instead.&quot;
                 </p>
