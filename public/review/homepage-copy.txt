@@ -44,8 +44,8 @@ Hero
 
 About section
 - Eyebrow: About
-- Heading: I run technology at a 200-person company. On the side, I take a small number of outside engagements.
-- Paragraph 1: The pattern is almost always the same. A leadership team that knows AI matters. A few promising experiments. And no clear route from prototype to something the business can rely on.
+- Heading: Built in production.
+- Paragraph 1: I've spent the last few years putting AI into production inside a real business, not a lab. Noventis is where I do the same work for a small number of outside clients.
 - Paragraph 2: That gap is what I close. Sometimes that means a written roadmap and an honest read on your current vendors. Sometimes it means showing up and building the thing. Sometimes it means being the senior technical voice in the room when the decisions actually get made.
 
 Engagements section
@@ -54,19 +54,19 @@ Engagements section
 - Section deck: The work is intentionally narrow: a clear diagnosis, a clean build, or ongoing senior technical judgment where it actually matters.
 
 Engagement card 1
-- Kicker: Fixed fee. Two weeks.
+- Kicker: Fixed scope. Defined deliverable.
 - Title: Audit & Roadmap
 - Body: I look at what you've built, what you're paying for, and where AI would actually move the needle. You get a written roadmap, an honest read on your current stack and vendors, and a prioritised plan any competent engineer could pick up and run.
 - Best for: Leadership teams who suspect they're spending money in the wrong places and want a second opinion that isn't trying to sell them a platform.
 
 Engagement card 2
-- Kicker: Hourly or fixed sprint.
+- Kicker: Sprint or ongoing.
 - Title: Build
 - Body: Hands-on engineering for the work your team can't get to. Production AI features, internal tools, integrations, evaluation harnesses, and the unglamorous infrastructure that makes AI products actually work in front of real users.
 - Best for: Companies with a clear thing they need built and no one available to build it properly.
 
 Engagement card 3
-- Kicker: Monthly retainer.
+- Kicker: Ongoing retainer.
 - Title: Support & Evolve
 - Body: A few days a month of senior technical judgment. Architecture reviews, hiring help, vendor decisions, board prep, and being the person your team can call when something is on fire at 9pm.
 - Best for: Founders or leadership teams who need a CTO in the room but don't yet need one on payroll.

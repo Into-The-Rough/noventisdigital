@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 
 const engagements = [
   {
-    kicker: 'Fixed fee. Two weeks.',
+    kicker: 'Fixed scope. Defined deliverable.',
     title: 'Audit & Roadmap',
     description:
       "I look at what you've built, what you're paying for, and where AI would actually move the needle. You get a written roadmap, an honest read on your current stack and vendors, and a prioritised plan any competent engineer could pick up and run.",
@@ -12,7 +12,7 @@ const engagements = [
     alt: 'Abstract AI strategy visual with luminous network lines and flowing motion.',
   },
   {
-    kicker: 'Hourly or fixed sprint.',
+    kicker: 'Sprint or ongoing.',
     title: 'Build',
     description:
       "Hands-on engineering for the work your team can't get to. Production AI features, internal tools, integrations, evaluation harnesses, and the unglamorous infrastructure that makes AI products actually work in front of real users.",
@@ -22,7 +22,7 @@ const engagements = [
     alt: 'Abstract leadership visual with layered interface geometry and directional movement.',
   },
   {
-    kicker: 'Monthly retainer.',
+    kicker: 'Ongoing retainer.',
     title: 'Support & Evolve',
     description:
       "A few days a month of senior technical judgment. Architecture reviews, hiring help, vendor decisions, board prep, and being the person your team can call when something is on fire at 9pm.",
@@ -155,16 +155,15 @@ export function HomePage() {
               <div>
                 <p className="eyebrow">About</p>
                 <h2 className="section-title-wide">
-                  I run technology at a 200-person company. On the side, I take
-                  a small number of outside engagements.
+                  Built in production.
                 </h2>
               </div>
 
               <div className="body-stack">
                 <p>
-                  The pattern is almost always the same. A leadership team that
-                  knows AI matters. A few promising experiments. And no clear
-                  route from prototype to something the business can rely on.
+                  I&apos;ve spent the last few years putting AI into production
+                  inside a real business, not a lab. Noventis is where I do the
+                  same work for a small number of outside clients.
                 </p>
                 <p>
                   That gap is what I close. Sometimes that means a written
