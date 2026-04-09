@@ -54,7 +54,6 @@ const ledgerItems = [
 
 const introSignals = ['CTO', 'Build', 'AI', 'Audit', 'Consulting', 'Programming', 'Security', 'Deployment', 'CI/CD', 'TDD', 'Coding']
 
-const workSignals = ['Audit', 'Build', 'Support']
 
 const approachSignals = ['Ship', 'Own', 'Stabilise']
 
@@ -184,20 +183,9 @@ export function HomePage() {
         </section>
 
         <section className="section container" id="work">
-          <div className="section-heading section-heading--split section-heading--ambient">
-            <div aria-hidden="true" className="section-aura section-aura--services">
-              <span className="section-aura-ring section-aura-ring--outer" />
-              <span className="section-aura-ring section-aura-ring--inner" />
-              {workSignals.map((signal, index) => (
-                <span className={`section-aura-chip section-aura-chip--${index + 1}`} key={signal}>
-                  {signal}
-                </span>
-              ))}
-            </div>
-            <div>
-              <p className="eyebrow">Engagements</p>
-              <h2 className="section-title-wide">Three solutions. Pick the one that fits where you are.</h2>
-            </div>
+          <div className="section-heading section-heading--stacked">
+            <p className="eyebrow">Engagements</p>
+            <h2 className="section-title-wide">Three solutions. Pick the one that fits where you are.</h2>
             <p className="section-deck">
               Diagnosis, delivery, or ongoing technical leadership. Scoped tight
               and pointed at the work that actually matters.

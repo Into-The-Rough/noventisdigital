@@ -26,6 +26,8 @@
   --muted-strong: #d4cbbb;
   --accent: #ece1d2;
   --accent-soft: rgba(236, 225, 210, 0.14);
+  --copper: #c4884d;
+  --copper-soft: rgba(196, 136, 77, 0.16);
   --danger: #ffc0b0;
   --shadow: 0 32px 80px rgba(0, 0, 0, 0.38);
 }
@@ -138,8 +140,8 @@ iframe {
   width: 0.65rem;
   height: 0.65rem;
   border-radius: 999px;
-  background: var(--accent);
-  box-shadow: 0 0 0 0.22rem rgba(236, 225, 210, 0.12);
+  background: var(--copper);
+  box-shadow: 0 0 0 0.22rem var(--copper-soft);
   flex-shrink: 0;
 }
 
@@ -200,8 +202,8 @@ iframe {
 }
 
 .primary-button {
-  background: var(--accent);
-  color: #0b0b0f;
+  background: var(--copper);
+  color: #fff;
   font-weight: 600;
 }
 
@@ -233,7 +235,7 @@ iframe {
 
 .eyebrow {
   margin: 0;
-  color: var(--muted);
+  color: var(--copper);
   font-size: 0.76rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
@@ -322,10 +324,10 @@ p {
   min-height: 3.2rem;
   padding: 0.6rem 0.8rem;
   border-radius: 999px;
-  border: 1px solid rgba(255, 245, 232, 0.12);
-  background: rgba(255, 250, 244, 0.05);
+  border: 1px solid var(--copper-soft);
+  background: rgba(196, 136, 77, 0.08);
   backdrop-filter: blur(12px);
-  color: var(--muted-strong);
+  color: var(--copper);
   font-size: 0.78rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -465,6 +467,17 @@ p {
   gap: 1.5rem;
 }
 
+.section-heading--stacked {
+  display: grid;
+  gap: 1rem;
+  max-width: 52rem;
+}
+
+.section-heading--stacked .section-deck {
+  max-width: none;
+  justify-self: start;
+}
+
 .section-deck {
   max-width: 36rem;
   justify-self: end;
@@ -530,8 +543,8 @@ p {
 .section-aura-dot {
   width: 0.65rem;
   height: 0.65rem;
-  background: rgba(236, 225, 210, 0.76);
-  box-shadow: 0 0 0 0.3rem rgba(236, 225, 210, 0.08);
+  background: var(--copper);
+  box-shadow: 0 0 0 0.3rem var(--copper-soft);
 }
 
 .section-aura-dot--one {
@@ -547,10 +560,10 @@ p {
 .section-aura-chip {
   min-height: 2.7rem;
   padding: 0.55rem 0.9rem;
-  border: 1px solid rgba(255, 245, 232, 0.12);
-  background: rgba(255, 250, 244, 0.045);
+  border: 1px solid var(--copper-soft);
+  background: rgba(196, 136, 77, 0.06);
   backdrop-filter: blur(14px);
-  color: var(--muted-strong);
+  color: var(--copper);
   font-size: 0.72rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -675,10 +688,10 @@ p {
   min-height: 2.9rem;
   padding: 0.6rem 0.95rem;
   border-radius: 999px;
-  border: 1px solid rgba(255, 245, 232, 0.12);
-  background: rgba(255, 250, 244, 0.045);
+  border: 1px solid var(--copper-soft);
+  background: rgba(196, 136, 77, 0.06);
   backdrop-filter: blur(14px);
-  color: var(--muted-strong);
+  color: var(--copper);
   font-size: 0.74rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -911,7 +924,7 @@ p {
 }
 
 .capability-best-for span {
-  color: var(--muted);
+  color: var(--copper);
   font-size: 0.72rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -942,7 +955,7 @@ p {
   width: 0.38rem;
   height: 0.38rem;
   border-radius: 999px;
-  background: var(--accent);
+  background: var(--copper);
 }
 
 .portal-login-card,
