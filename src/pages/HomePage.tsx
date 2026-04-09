@@ -102,18 +102,15 @@ export function HomePage() {
             <p className="eyebrow motion-reveal motion-reveal--1">
               Fractional CTO. AI strategy. Hands-on build.
             </p>
-            <h1 className="hero-title" aria-label="Most AI pilots never reach production. I'm the person you call when yours has to.">
+            <h1 className="hero-title" aria-label="Most AI consultants ship slides. I ship software.">
               <span className="hero-title-line">
-                <span className="motion-clip motion-clip--1">Most AI pilots</span>
+                <span className="motion-clip motion-clip--1">Most AI consultants</span>
               </span>
               <span className="hero-title-line">
-                <span className="motion-clip motion-clip--2">never reach production.</span>
+                <span className="motion-clip motion-clip--2">ship slides.</span>
               </span>
               <span className="hero-title-line">
-                <span className="motion-clip motion-clip--3">I'm the person you call</span>
-              </span>
-              <span className="hero-title-line">
-                <span className="motion-clip motion-clip--4">when yours has to.</span>
+                <span className="motion-clip motion-clip--3">I ship software.</span>
               </span>
             </h1>
             <p className="hero-text motion-reveal motion-reveal--3">
