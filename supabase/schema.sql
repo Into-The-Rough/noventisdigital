@@ -279,7 +279,124 @@ to service_role
 using (bucket_id = 'client-documents')
 with check (bucket_id = 'client-documents');
 
+create table if not exists public.client_uploads (
+  id uuid primary key default gen_random_uuid(),
+  auth_user_id uuid not null references auth.users(id) on delete cascade,
+  quote_id uuid references public.quotes(id) on delete set null,
+  file_path text not null,
+  file_name text not null,
+  file_size bigint,
+  content_type text,
+  notes text not null default '',
+  created_at timestamptz not null default now()
+);
+
+create index if not exists client_uploads_auth_user_id_created_at_idx
+on public.client_uploads (auth_user_id, created_at desc);
+
+alter table public.client_uploads enable row level security;
+
+insert into storage.buckets (
+  id,
+  name,
+  public,
+  file_size_limit,
+  allowed_mime_types
+)
+values (
+  'client-uploads',
+  'client-uploads',
+  false,
+  26214400,
+  array[
+    'application/pdf',
+    'image/png',
+    'image/jpeg',
+    'image/webp',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'text/plain',
+    'text/csv'
+  ]
+)
+on conflict (id) do update
+set
+  public = excluded.public,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "Clients can view own uploads" on public.client_uploads;
+drop policy if exists "Clients can insert own uploads" on public.client_uploads;
+drop policy if exists "Admins can view all uploads" on public.client_uploads;
+drop policy if exists "Service role can manage client uploads" on public.client_uploads;
+
+create policy "Clients can view own uploads"
+on public.client_uploads
+for select
+to authenticated
+using (auth.uid() = auth_user_id);
+
+create policy "Clients can insert own uploads"
+on public.client_uploads
+for insert
+to authenticated
+with check (auth.uid() = auth_user_id);
+
+create policy "Admins can view all uploads"
+on public.client_uploads
+for select
+to authenticated
+using (public.is_admin_user());
+
+create policy "Service role can manage client uploads"
+on public.client_uploads
+for all
+using (auth.role() = 'service_role')
+with check (auth.role() = 'service_role');
+
+drop policy if exists "Clients can upload to own client-uploads folder" on storage.objects;
+drop policy if exists "Clients can read own client-uploads" on storage.objects;
+drop policy if exists "Admins can read all client-uploads" on storage.objects;
+drop policy if exists "Service role can manage client-uploads storage" on storage.objects;
+
+create policy "Clients can upload to own client-uploads folder"
+on storage.objects
+for insert
+to authenticated
+with check (
+  bucket_id = 'client-uploads'
+  and (storage.foldername(name))[1] = auth.uid()::text
+);
+
+create policy "Clients can read own client-uploads"
+on storage.objects
+for select
+to authenticated
+using (
+  bucket_id = 'client-uploads'
+  and (storage.foldername(name))[1] = auth.uid()::text
+);
+
+create policy "Admins can read all client-uploads"
+on storage.objects
+for select
+to authenticated
+using (
+  bucket_id = 'client-uploads'
+  and public.is_admin_user()
+);
+
+create policy "Service role can manage client-uploads storage"
+on storage.objects
+for all
+to service_role
+using (bucket_id = 'client-uploads')
+with check (bucket_id = 'client-uploads');
+
 comment on table public.client_profiles is 'Client directory rows used by the Noventis Digital portal.';
 comment on table public.quotes is 'Client-facing quote records surfaced in the Noventis Digital portal.';
 comment on table public.admin_users is 'Users allowed to access the Noventis admin console.';
 comment on table public.portal_audit_logs is 'Audit trail for client portal activity and admin console actions.';
+comment on table public.client_uploads is 'Files uploaded by portal clients back to Noventis.';

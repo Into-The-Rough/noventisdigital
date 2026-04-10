@@ -1,6 +1,7 @@
 import type { FormEvent } from 'react'
 import { formatDateTime } from '../../lib/formatting.ts'
 import type { AdminClientRecord, AuditLogRecord, CreateClientInput } from '../../types.ts'
+import { ClientUploadsPanel } from './ClientUploadsPanel.tsx'
 import type { AdminView } from './types.ts'
 import { getAuditScopeLabel, getClientLastSignInLabel, prettifyEventType } from './types.ts'
 
@@ -297,6 +298,8 @@ export function ClientsView({
                 {updatePending ? 'Saving...' : 'Save details'}
               </button>
             </form>
+
+            <ClientUploadsPanel clientId={selectedClient.id} />
 
             <div className="admin-secondary-grid">
               <form className="detail-card admin-form-card" onSubmit={onResetPassword}>

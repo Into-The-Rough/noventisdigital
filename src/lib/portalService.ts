@@ -1,6 +1,7 @@
 import type { Session } from '@supabase/supabase-js'
 import { demoClients, demoQuotes } from '../data/demoPortal'
 import type {
+  ClientUpload,
   Milestone,
   PortalClient,
   PortalMode,
@@ -9,6 +10,8 @@ import type {
   QuoteItem,
 } from '../types'
 import { hasSupabase, supabase } from './supabase'
+
+const CLIENT_UPLOADS_BUCKET = 'client-uploads'
 
 const demoSessionKey = 'noventis-digital-demo-session'
 
@@ -38,6 +41,36 @@ type ClientProfileRow = {
   full_name: string | null
   company: string | null
   role: string | null
+}
+
+type ClientUploadRow = {
+  id: string
+  auth_user_id: string
+  quote_id: string | null
+  file_path: string
+  file_name: string
+  file_size: number | null
+  content_type: string | null
+  notes: string | null
+  created_at: string
+}
+
+function mapUploadRow(row: ClientUploadRow): ClientUpload {
+  return {
+    id: row.id,
+    authUserId: row.auth_user_id,
+    quoteId: row.quote_id,
+    filePath: row.file_path,
+    fileName: row.file_name,
+    fileSize: row.file_size,
+    contentType: row.content_type,
+    notes: row.notes ?? '',
+    createdAt: row.created_at,
+  }
+}
+
+function sanitiseFileName(name: string) {
+  return name.replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/^-+|-+$/g, '') || 'file'
 }
 
 export const portalMode: PortalMode = hasSupabase ? 'live' : 'demo'
@@ -424,6 +457,120 @@ export function getDocumentStoragePath(document: QuoteAttachment) {
   const reference = parseStorageDocumentUrl(document.url)
 
   return reference?.path ?? document.url
+}
+
+export async function listClientUploads(
+  clientId: string,
+  quoteId?: string | null,
+): Promise<ClientUpload[]> {
+  if (!hasSupabase || !supabase) {
+    return []
+  }
+
+  let query = supabase
+    .from('client_uploads')
+    .select(
+      'id, auth_user_id, quote_id, file_path, file_name, file_size, content_type, notes, created_at',
+    )
+    .eq('auth_user_id', clientId)
+    .order('created_at', { ascending: false })
+
+  if (quoteId) {
+    query = query.eq('quote_id', quoteId)
+  }
+
+  const { data, error } = await query
+
+  if (error) {
+    throw error
+  }
+
+  return (data ?? []).map((row) => mapUploadRow(row as ClientUploadRow))
+}
+
+export async function uploadClientFile(input: {
+  clientId: string
+  quoteId: string | null
+  file: File
+  notes?: string
+}): Promise<ClientUpload> {
+  if (!hasSupabase || !supabase) {
+    throw new Error('Uploads are only available once the portal is connected to Supabase.')
+  }
+
+  const timestamp = Date.now()
+  const safeName = sanitiseFileName(input.file.name)
+  const filePath = `${input.clientId}/${timestamp}-${safeName}`
+
+  const { error: storageError } = await supabase.storage
+    .from(CLIENT_UPLOADS_BUCKET)
+    .upload(filePath, input.file, {
+      contentType: input.file.type || 'application/octet-stream',
+      upsert: false,
+    })
+
+  if (storageError) {
+    throw storageError
+  }
+
+  const { data, error } = await supabase
+    .from('client_uploads')
+    .insert({
+      auth_user_id: input.clientId,
+      quote_id: input.quoteId,
+      file_path: filePath,
+      file_name: input.file.name,
+      file_size: input.file.size,
+      content_type: input.file.type || null,
+      notes: input.notes ?? '',
+    })
+    .select(
+      'id, auth_user_id, quote_id, file_path, file_name, file_size, content_type, notes, created_at',
+    )
+    .single()
+
+  if (error || !data) {
+    await supabase.storage
+      .from(CLIENT_UPLOADS_BUCKET)
+      .remove([filePath])
+      .catch(() => {})
+    throw error ?? new Error('Upload metadata could not be saved.')
+  }
+
+  void insertPortalAuditEvent('client_file_uploaded', {
+    quoteId: input.quoteId ?? undefined,
+    documentPath: filePath,
+    metadata: {
+      fileName: input.file.name,
+      fileSize: input.file.size,
+      contentType: input.file.type,
+    },
+  }).catch((error) => {
+    console.error('Failed to write client_file_uploaded audit event', error)
+  })
+
+  return mapUploadRow(data as ClientUploadRow)
+}
+
+export async function resolveClientUploadAssetUrl(
+  upload: ClientUpload,
+): Promise<{ url: string; revokeOnDispose: boolean }> {
+  if (!supabase) {
+    throw new Error('Secure upload access is not available right now.')
+  }
+
+  const { data, error } = await supabase.storage
+    .from(CLIENT_UPLOADS_BUCKET)
+    .download(upload.filePath)
+
+  if (error) {
+    throw error
+  }
+
+  return {
+    url: URL.createObjectURL(data),
+    revokeOnDispose: true,
+  }
 }
 
 export function subscribeToAuth(

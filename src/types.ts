@@ -123,6 +123,18 @@ export type ResetClientPasswordInput = {
   password: string
 }
 
+export type ClientUpload = {
+  id: string
+  authUserId: string
+  quoteId: string | null
+  filePath: string
+  fileName: string
+  fileSize: number | null
+  contentType: string | null
+  notes: string
+  createdAt: string
+}
+
 export type UploadClientPackInput = {
   userId: string
   title: string

@@ -1,19 +1,36 @@
-import type { FormEvent } from 'react'
+import type { DragEvent, FormEvent } from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { demoCredentials } from '../data/demoPortal'
-import { formatCurrency, formatDate } from '../lib/formatting'
+import { formatCurrency, formatDate, formatDateTime } from '../lib/formatting'
 import {
   getDocumentStoragePath,
+  listClientUploads,
   logPortalAuditEvent,
+  portalMode as resolvedPortalMode,
   resolveDocumentAssetUrl,
+  uploadClientFile,
 } from '../lib/portalService'
 import type {
+  ClientUpload,
   PortalClient,
   PortalMode,
   QuoteAttachment,
   QuoteDocument,
 } from '../types'
+
+function formatFileSize(size: number | null) {
+  if (size === null || size === undefined) {
+    return ''
+  }
+  if (size < 1024) {
+    return `${size} B`
+  }
+  if (size < 1024 * 1024) {
+    return `${(size / 1024).toFixed(1)} KB`
+  }
+  return `${(size / (1024 * 1024)).toFixed(1)} MB`
+}
 
 type PortalPageProps = {
   client: PortalClient | null
@@ -102,6 +119,11 @@ export function PortalPage({
   )
   const [documentLoading, setDocumentLoading] = useState(false)
   const [documentError, setDocumentError] = useState<string | null>(null)
+  const [clientUploads, setClientUploads] = useState<ClientUpload[]>([])
+  const [uploadsLoading, setUploadsLoading] = useState(false)
+  const [uploadPending, setUploadPending] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const [uploadsDragOver, setUploadsDragOver] = useState(false)
   const viewedQuoteIdsRef = useRef(new Set<string>())
   const viewedDocumentKeysRef = useRef(new Set<string>())
 
@@ -139,6 +161,88 @@ export function PortalPage({
       )
     },
     [navigate],
+  )
+
+  const refreshClientUploads = useCallback(async () => {
+    if (!client || resolvedPortalMode !== 'live') {
+      setClientUploads([])
+      return
+    }
+
+    setUploadsLoading(true)
+    try {
+      const uploads = await listClientUploads(client.id)
+      setClientUploads(uploads)
+    } catch (error) {
+      setUploadError(
+        error instanceof Error ? error.message : 'Unable to load your uploads.',
+      )
+    } finally {
+      setUploadsLoading(false)
+    }
+  }, [client])
+
+  useEffect(() => {
+    void refreshClientUploads()
+  }, [refreshClientUploads])
+
+  const handleClientFileUpload = useCallback(
+    async (file: File) => {
+      if (!client || !selectedQuote) {
+        return
+      }
+
+      setUploadError(null)
+      setUploadPending(true)
+
+      try {
+        await uploadClientFile({
+          clientId: client.id,
+          quoteId: selectedQuote.id,
+          file,
+        })
+        await refreshClientUploads()
+      } catch (error) {
+        setUploadError(
+          error instanceof Error ? error.message : 'Unable to upload that file.',
+        )
+      } finally {
+        setUploadPending(false)
+      }
+    },
+    [client, selectedQuote, refreshClientUploads],
+  )
+
+  const handleUploadsDragOver = (event: DragEvent<HTMLDivElement>) => {
+    if (!Array.from(event.dataTransfer.items).some((item) => item.kind === 'file')) {
+      return
+    }
+    event.preventDefault()
+    event.dataTransfer.dropEffect = 'copy'
+    setUploadsDragOver(true)
+  }
+
+  const handleUploadsDragLeave = (event: DragEvent<HTMLDivElement>) => {
+    if (event.currentTarget === event.target) {
+      setUploadsDragOver(false)
+    }
+  }
+
+  const handleUploadsDrop = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault()
+    setUploadsDragOver(false)
+    const file = event.dataTransfer.files?.[0]
+    if (file) {
+      void handleClientFileUpload(file)
+    }
+  }
+
+  const uploadsForSelectedQuote = useMemo(
+    () =>
+      selectedQuote
+        ? clientUploads.filter((upload) => upload.quoteId === selectedQuote.id)
+        : [],
+    [clientUploads, selectedQuote],
   )
 
   useEffect(() => {
@@ -612,6 +716,74 @@ export function PortalPage({
                     <h3>Notes</h3>
                     <p>{selectedQuote.notes}</p>
                   </section>
+
+                  {resolvedPortalMode === 'live' ? (
+                    <section
+                      className={`detail-card portal-upload-card ${
+                        uploadsDragOver ? 'is-drag-over' : ''
+                      }`}
+                      onDragEnter={handleUploadsDragOver}
+                      onDragLeave={handleUploadsDragLeave}
+                      onDragOver={handleUploadsDragOver}
+                      onDrop={handleUploadsDrop}
+                    >
+                      <div className="section-card-heading">
+                        <div>
+                          <h3>Send files to Noventis</h3>
+                          <p className="portal-upload-hint">
+                            Drop a file here or use the button. PDFs, images, and
+                            common documents up to 25&nbsp;MB.
+                          </p>
+                        </div>
+                        <label className="ghost-button portal-upload-pick">
+                          {uploadPending ? 'Uploading...' : 'Choose file'}
+                          <input
+                            accept="application/pdf,image/png,image/jpeg,image/webp,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/plain,text/csv"
+                            disabled={uploadPending}
+                            onChange={(event) => {
+                              const file = event.target.files?.[0]
+                              if (file) {
+                                void handleClientFileUpload(file)
+                              }
+                              event.target.value = ''
+                            }}
+                            style={{ display: 'none' }}
+                            type="file"
+                          />
+                        </label>
+                      </div>
+
+                      {uploadError ? (
+                        <div className="error-banner">{uploadError}</div>
+                      ) : null}
+
+                      {uploadsLoading ? (
+                        <div className="loading-panel">Loading your uploads...</div>
+                      ) : uploadsForSelectedQuote.length ? (
+                        <ul className="portal-upload-list">
+                          {uploadsForSelectedQuote.map((upload) => (
+                            <li className="portal-upload-item" key={upload.id}>
+                              <div>
+                                <strong>{upload.fileName}</strong>
+                                <span>
+                                  {formatDateTime(upload.createdAt)}
+                                  {upload.fileSize
+                                    ? ` · ${formatFileSize(upload.fileSize)}`
+                                    : ''}
+                                </span>
+                              </div>
+                              <span className="document-badge">Sent</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="empty-state">
+                          No files sent for this pack yet. Drop one to share it with
+                          Noventis.
+                        </p>
+                      )}
+                    </section>
+                  ) : null}
 
                   <div className="quote-actions">
                     <a

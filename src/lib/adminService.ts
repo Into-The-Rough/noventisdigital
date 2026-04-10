@@ -3,12 +3,41 @@ import type {
   AdminClientRecord,
   AdminUser,
   AuditLogRecord,
+  ClientUpload,
   CreateClientInput,
   ResetClientPasswordInput,
   UpdateClientInput,
   UploadClientPackInput,
 } from '../types'
 import { hasSupabase, supabase, supabaseUrl } from './supabase'
+
+const CLIENT_UPLOADS_BUCKET = 'client-uploads'
+
+type ClientUploadRow = {
+  id: string
+  auth_user_id: string
+  quote_id: string | null
+  file_path: string
+  file_name: string
+  file_size: number | null
+  content_type: string | null
+  notes: string | null
+  created_at: string
+}
+
+function mapAdminUploadRow(row: ClientUploadRow): ClientUpload {
+  return {
+    id: row.id,
+    authUserId: row.auth_user_id,
+    quoteId: row.quote_id,
+    filePath: row.file_path,
+    fileName: row.file_name,
+    fileSize: row.file_size,
+    contentType: row.content_type,
+    notes: row.notes ?? '',
+    createdAt: row.created_at,
+  }
+}
 
 type AdminFunctionPayload = {
   ok?: boolean
@@ -247,6 +276,42 @@ export async function uploadClientPack(input: UploadClientPackInput) {
   if (!response.ok || !result?.ok) {
     throw new Error(result?.error ?? 'Pack upload failed.')
   }
+}
+
+export async function listClientUploadsForUser(userId: string): Promise<ClientUpload[]> {
+  if (!supabase) {
+    return []
+  }
+
+  const { data, error } = await supabase
+    .from('client_uploads')
+    .select(
+      'id, auth_user_id, quote_id, file_path, file_name, file_size, content_type, notes, created_at',
+    )
+    .eq('auth_user_id', userId)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    throw error
+  }
+
+  return (data ?? []).map((row) => mapAdminUploadRow(row as ClientUploadRow))
+}
+
+export async function downloadClientUploadAsBlob(filePath: string): Promise<Blob> {
+  if (!supabase) {
+    throw new Error('Supabase is not configured.')
+  }
+
+  const { data, error } = await supabase.storage
+    .from(CLIENT_UPLOADS_BUCKET)
+    .download(filePath)
+
+  if (error) {
+    throw error
+  }
+
+  return data
 }
 
 export function getAuthErrorMessage(error: unknown) {
