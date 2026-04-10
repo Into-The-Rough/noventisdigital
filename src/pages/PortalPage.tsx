@@ -1,6 +1,6 @@
 import type { FormEvent } from 'react'
-import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { demoCredentials } from '../data/demoPortal'
 import { formatCurrency, formatDate } from '../lib/formatting'
 import {
@@ -43,6 +43,33 @@ function getDocumentKey(document: QuoteAttachment) {
   return `${document.kind}:${document.url}:${document.label}`
 }
 
+function parsePortalLocation(pathname: string): {
+  quoteIdFromUrl: string | null
+  docIndexFromUrl: number | null
+} {
+  const trimmed = pathname.replace(/^\/portal\/?/, '').replace(/\/$/, '')
+  if (!trimmed) {
+    return { quoteIdFromUrl: null, docIndexFromUrl: null }
+  }
+
+  const parts = trimmed.split('/')
+  if (parts[0] !== 'quotes' || !parts[1]) {
+    return { quoteIdFromUrl: null, docIndexFromUrl: null }
+  }
+
+  const quoteId = decodeURIComponent(parts[1])
+
+  if (parts[2] === 'docs' && parts[3] !== undefined) {
+    const parsed = Number.parseInt(parts[3], 10)
+    return {
+      quoteIdFromUrl: quoteId,
+      docIndexFromUrl: Number.isFinite(parsed) ? parsed : null,
+    }
+  }
+
+  return { quoteIdFromUrl: quoteId, docIndexFromUrl: null }
+}
+
 export function PortalPage({
   client,
   quotes,
@@ -53,6 +80,14 @@ export function PortalPage({
   onLogin,
   onLogout,
 }: PortalPageProps) {
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const { quoteIdFromUrl, docIndexFromUrl } = useMemo(
+    () => parsePortalLocation(location.pathname),
+    [location.pathname],
+  )
+
   const [email, setEmail] = useState(
     portalMode === 'demo' ? (demoCredentials[0]?.email ?? '') : '',
   )
@@ -62,8 +97,6 @@ export function PortalPage({
   const [localError, setLocalError] = useState<string | null>(null)
   const [authPending, setAuthPending] = useState(false)
   const [signOutPending, setSignOutPending] = useState(false)
-  const [selectedQuoteId, setSelectedQuoteId] = useState<string | null>(null)
-  const [selectedDocumentKey, setSelectedDocumentKey] = useState<string | null>(null)
   const [selectedDocumentAssetUrl, setSelectedDocumentAssetUrl] = useState<string | null>(
     null,
   )
@@ -72,43 +105,41 @@ export function PortalPage({
   const viewedQuoteIdsRef = useRef(new Set<string>())
   const viewedDocumentKeysRef = useRef(new Set<string>())
 
-  useEffect(() => {
-    if (!quotes.length) {
-      setSelectedQuoteId(null)
-      return
-    }
+  const selectedQuote = useMemo(
+    () =>
+      (quoteIdFromUrl && quotes.find((quote) => quote.id === quoteIdFromUrl)) ||
+      quotes[0] ||
+      null,
+    [quotes, quoteIdFromUrl],
+  )
 
-    setSelectedQuoteId((current) =>
-      current && quotes.some((quote) => quote.id === current)
-        ? current
-        : quotes[0].id,
-    )
-  }, [quotes])
-
-  const selectedQuote =
-    quotes.find((quote) => quote.id === selectedQuoteId) ?? quotes[0] ?? null
-
-  useEffect(() => {
+  const selectedDocument = useMemo(() => {
     if (!selectedQuote?.documents.length) {
-      setSelectedDocumentKey(null)
-      return
+      return null
     }
+    if (docIndexFromUrl !== null && selectedQuote.documents[docIndexFromUrl]) {
+      return selectedQuote.documents[docIndexFromUrl]
+    }
+    return selectedQuote.documents[0]
+  }, [selectedQuote, docIndexFromUrl])
 
-    setSelectedDocumentKey((current) =>
-      current &&
-      selectedQuote.documents.some((document) => getDocumentKey(document) === current)
-        ? current
-        : getDocumentKey(selectedQuote.documents[0]),
-    )
-  }, [selectedQuote])
-
-  const selectedDocument =
-    selectedQuote?.documents.find(
-      (document) => getDocumentKey(document) === selectedDocumentKey,
-    ) ??
-    selectedQuote?.documents[0] ??
-    null
   const activeDocumentKey = selectedDocument ? getDocumentKey(selectedDocument) : null
+
+  const navigateToQuote = useCallback(
+    (quoteId: string) => {
+      navigate(`/portal/quotes/${encodeURIComponent(quoteId)}`)
+    },
+    [navigate],
+  )
+
+  const navigateToDocument = useCallback(
+    (quoteId: string, docIndex: number) => {
+      navigate(
+        `/portal/quotes/${encodeURIComponent(quoteId)}/docs/${docIndex}`,
+      )
+    },
+    [navigate],
+  )
 
   useEffect(() => {
     let isActive = true
@@ -404,7 +435,7 @@ export function PortalPage({
                           quote.id === selectedQuote?.id ? 'is-active' : ''
                         }`}
                         key={quote.id}
-                        onClick={() => setSelectedQuoteId(quote.id)}
+                        onClick={() => navigateToQuote(quote.id)}
                         type="button"
                       >
                         <span className="quote-list-topline">
@@ -478,7 +509,7 @@ export function PortalPage({
                       </div>
 
                       <div className="document-grid">
-                        {selectedQuote.documents.map((document) => (
+                        {selectedQuote.documents.map((document, index) => (
                           <button
                             className={`document-card ${
                               getDocumentKey(document) === activeDocumentKey
@@ -486,7 +517,7 @@ export function PortalPage({
                                 : ''
                             }`}
                             key={getDocumentKey(document)}
-                            onClick={() => setSelectedDocumentKey(getDocumentKey(document))}
+                            onClick={() => navigateToDocument(selectedQuote.id, index)}
                             type="button"
                           >
                             <span className="document-badge">{document.kind}</span>

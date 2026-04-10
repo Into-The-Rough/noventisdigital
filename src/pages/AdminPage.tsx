@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useCallback, useMemo, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { AdminLoginScreen } from '../components/admin/AdminLoginScreen.tsx'
 import { AdminSidebar } from '../components/admin/AdminSidebar.tsx'
 import { AuditView } from '../components/admin/AuditView.tsx'
@@ -7,12 +7,44 @@ import { ClientsView } from '../components/admin/ClientsView.tsx'
 import { DocumentsView } from '../components/admin/DocumentsView.tsx'
 import { OverviewView } from '../components/admin/OverviewView.tsx'
 import type { AdminView } from '../components/admin/types.ts'
+import { adminViews } from '../components/admin/types.ts'
 import { useAdminAuth } from '../hooks/useAdminAuth.ts'
 import { useAdminData } from '../hooks/useAdminData.ts'
 import { useAdminDerivedData } from '../hooks/useAdminDerivedData.ts'
 
+const ADMIN_VIEW_IDS = new Set<AdminView>(adminViews.map((view) => view.id))
+
+function parseAdminLocation(pathname: string): {
+  activeView: AdminView
+  clientIdFromUrl: string | null
+} {
+  const trimmed = pathname.replace(/^\/admin\/?/, '').replace(/\/$/, '')
+  if (!trimmed) {
+    return { activeView: 'overview', clientIdFromUrl: null }
+  }
+
+  const [viewSegment, clientSegment] = trimmed.split('/')
+  const candidate = viewSegment as AdminView
+
+  if (ADMIN_VIEW_IDS.has(candidate)) {
+    return {
+      activeView: candidate,
+      clientIdFromUrl: clientSegment ?? null,
+    }
+  }
+
+  return { activeView: 'overview', clientIdFromUrl: null }
+}
+
 export function AdminPage() {
-  const [activeView, setActiveView] = useState<AdminView>('overview')
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const { activeView, clientIdFromUrl } = useMemo(
+    () => parseAdminLocation(location.pathname),
+    [location.pathname],
+  )
+
   const [localError, setLocalError] = useState<string | null>(null)
   const [statusMessage, setStatusMessage] = useState<string | null>(null)
 
@@ -21,26 +53,53 @@ export function AdminPage() {
     setStatusMessage(null)
   }, [])
 
-  const data = useAdminData({
-    onError: setLocalError,
-    onStatus: setStatusMessage,
-    clearError: useCallback(() => setLocalError(null), []),
-    clearMessages,
-    setActiveView,
-  })
+  const navigateToView = useCallback(
+    (view: AdminView, clientId?: string | null) => {
+      const targetClientId =
+        clientId === undefined ? clientIdFromUrl : clientId
+      if (view === 'overview') {
+        navigate('/admin')
+        return
+      }
+      const target = targetClientId
+        ? `/admin/${view}/${targetClientId}`
+        : `/admin/${view}`
+      navigate(target)
+    },
+    [navigate, clientIdFromUrl],
+  )
+
+  const data = useAdminData(
+    {
+      onError: setLocalError,
+      onStatus: setStatusMessage,
+      clearError: useCallback(() => setLocalError(null), []),
+      clearMessages,
+      navigateToView,
+    },
+    { selectedClientIdFromUrl: clientIdFromUrl },
+  )
 
   const auth = useAdminAuth({
     onLoginSuccess: data.refreshDashboardData,
     onSignOut: () => {
       setStatusMessage(null)
       data.resetAllData()
-      setActiveView('overview')
+      navigate('/admin')
     },
     onError: setLocalError,
     clearMessages,
   })
 
   const derived = useAdminDerivedData(data.clients, data.auditLogs, data.selectedClient)
+
+  const handleSelectClient = useCallback(
+    (id: string) => {
+      const view = activeView === 'overview' ? 'clients' : activeView
+      navigateToView(view, id)
+    },
+    [navigateToView, activeView],
+  )
 
   if (auth.booting) {
     return (
@@ -100,8 +159,8 @@ export function AdminPage() {
               selectedClient={data.selectedClient}
               activeView={activeView}
               loadingData={data.loadingData}
-              onSelectView={setActiveView}
-              onSelectClient={data.setSelectedClientId}
+              onSelectView={(view) => navigateToView(view)}
+              onSelectClient={handleSelectClient}
             />
 
             <div className="admin-stage">
@@ -120,12 +179,9 @@ export function AdminPage() {
                   recentlyUpdatedClients={derived.recentlyUpdatedClients}
                   loadingData={data.loadingData}
                   onRefresh={() => void data.refreshDashboardData()}
-                  onSelectView={setActiveView}
+                  onSelectView={(view) => navigateToView(view)}
                   onSelectClient={(id, navigateTo) => {
-                    data.setSelectedClientId(id)
-                    if (navigateTo) {
-                      setActiveView(navigateTo)
-                    }
+                    navigateToView(navigateTo ?? 'clients', id)
                   }}
                 />
               ) : null}
@@ -156,7 +212,7 @@ export function AdminPage() {
                   onResetPassword={data.handleResetPassword}
                   onDeleteClient={data.handleDeleteClient}
                   onRefresh={() => void data.refreshDashboardData()}
-                  onSelectView={setActiveView}
+                  onSelectView={(view) => navigateToView(view)}
                 />
               ) : null}
 
@@ -187,7 +243,7 @@ export function AdminPage() {
                   onPackDescriptionChange={data.setPackDescription}
                   onPackFileChange={data.setPackFile}
                   onUploadPack={data.handleUploadPack}
-                  onSelectView={setActiveView}
+                  onSelectView={(view) => navigateToView(view)}
                 />
               ) : null}
 

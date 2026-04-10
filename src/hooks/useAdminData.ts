@@ -19,13 +19,20 @@ export type UseAdminDataCallbacks = {
   onStatus: (message: string) => void
   clearError: () => void
   clearMessages: () => void
-  setActiveView: (view: AdminView) => void
+  navigateToView: (view: AdminView, clientId?: string | null) => void
 }
 
-export function useAdminData(callbacks: UseAdminDataCallbacks) {
+export type UseAdminDataOptions = {
+  selectedClientIdFromUrl: string | null
+}
+
+export function useAdminData(
+  callbacks: UseAdminDataCallbacks,
+  options: UseAdminDataOptions,
+) {
+  const { selectedClientIdFromUrl } = options
   const [clients, setClients] = useState<AdminClientRecord[]>([])
   const [auditLogs, setAuditLogs] = useState<AuditLogRecord[]>([])
-  const [selectedClientId, setSelectedClientId] = useState<string | null>(null)
   const [loadingData, setLoadingData] = useState(false)
 
   const [createPending, setCreatePending] = useState(false)
@@ -56,8 +63,11 @@ export function useAdminData(callbacks: UseAdminDataCallbacks) {
   const [packFile, setPackFile] = useState<File | null>(null)
 
   const selectedClient = useMemo(
-    () => clients.find((client) => client.id === selectedClientId) ?? clients[0] ?? null,
-    [clients, selectedClientId],
+    () =>
+      clients.find((client) => client.id === selectedClientIdFromUrl) ??
+      clients[0] ??
+      null,
+    [clients, selectedClientIdFromUrl],
   )
 
   async function refreshDashboardData() {
@@ -78,19 +88,6 @@ export function useAdminData(callbacks: UseAdminDataCallbacks) {
       setLoadingData(false)
     }
   }
-
-  useEffect(() => {
-    if (!selectedClient) {
-      setSelectedClientId(null)
-      return
-    }
-
-    setSelectedClientId((current) =>
-      current && clients.some((client) => client.id === current)
-        ? current
-        : selectedClient.id,
-    )
-  }, [clients, selectedClient])
 
   useEffect(() => {
     if (!selectedClient) {
@@ -139,11 +136,8 @@ export function useAdminData(callbacks: UseAdminDataCallbacks) {
     try {
       const nextClient = await createClient(createForm)
       await refreshDashboardData()
-      if (nextClient?.id) {
-        setSelectedClientId(nextClient.id)
-      }
       setCreateForm({ ...defaultCreateForm })
-      callbacks.setActiveView('clients')
+      callbacks.navigateToView('clients', nextClient?.id ?? null)
       callbacks.onStatus(`Created ${nextClient?.email ?? 'client account'}.`)
     } catch (error) {
       callbacks.onError(getAuthErrorMessage(error))
@@ -223,8 +217,7 @@ export function useAdminData(callbacks: UseAdminDataCallbacks) {
     try {
       await deleteClient(selectedClient.id)
       await refreshDashboardData()
-      setSelectedClientId(null)
-      callbacks.setActiveView('clients')
+      callbacks.navigateToView('clients', null)
       callbacks.onStatus(`Deleted ${selectedClient.email}.`)
     } catch (error) {
       callbacks.onError(getAuthErrorMessage(error))
@@ -275,13 +268,11 @@ export function useAdminData(callbacks: UseAdminDataCallbacks) {
   function resetAllData() {
     setClients([])
     setAuditLogs([])
-    setSelectedClientId(null)
   }
 
   return {
     clients,
     auditLogs,
-    selectedClientId,
     selectedClient,
     loadingData,
     createPending,
@@ -306,7 +297,6 @@ export function useAdminData(callbacks: UseAdminDataCallbacks) {
     packLabel,
     packDescription,
     packFile,
-    setSelectedClientId,
     setCreateForm,
     setEditEmail,
     setEditName,
