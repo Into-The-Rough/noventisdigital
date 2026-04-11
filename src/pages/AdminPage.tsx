@@ -5,6 +5,7 @@ import { AdminSidebar } from '../components/admin/AdminSidebar.tsx'
 import { AuditView } from '../components/admin/AuditView.tsx'
 import { ClientsView } from '../components/admin/ClientsView.tsx'
 import { DocumentsView } from '../components/admin/DocumentsView.tsx'
+import { EmailPreviewView } from '../components/admin/EmailPreviewView.tsx'
 import { OverviewView } from '../components/admin/OverviewView.tsx'
 import type { AdminView } from '../components/admin/types.ts'
 import { adminViews } from '../components/admin/types.ts'
@@ -262,6 +263,8 @@ export function AdminPage() {
                   onRefresh={() => void data.refreshDashboardData()}
                 />
               ) : null}
+
+              {activeView === 'email-preview' ? <EmailPreviewView /> : null}
             </div>
           </section>
         )}

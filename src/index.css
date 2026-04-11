@@ -1752,6 +1752,141 @@ p {
   color: var(--muted);
 }
 
+.admin-email-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
+  gap: 1.2rem;
+  align-items: start;
+}
+
+.admin-email-sidebar {
+  display: grid;
+  gap: 0.8rem;
+  position: sticky;
+  top: 1rem;
+}
+
+.admin-email-template-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.admin-email-template-button {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: rgba(255, 250, 244, 0.02);
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+  transition:
+    border-color 220ms ease,
+    background-color 220ms ease;
+}
+
+.admin-email-template-button strong {
+  font-size: 0.85rem;
+}
+
+.admin-email-template-button span {
+  font-size: 0.7rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.admin-email-template-button:hover {
+  border-color: var(--line-strong);
+}
+
+.admin-email-template-button.is-active {
+  border-color: var(--accent);
+  background-color: var(--accent-soft);
+}
+
+.admin-email-stage {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.admin-email-envelope {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.admin-email-envelope-row {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: 0.6rem;
+  font-size: 0.8rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-email-envelope-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.admin-email-envelope-row span {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.admin-email-envelope-row strong {
+  font-weight: 500;
+  color: var(--accent);
+  word-break: break-word;
+}
+
+.admin-email-body-card {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.admin-email-mode-toggle {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.admin-email-mode-toggle .ghost-button.is-active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.admin-email-iframe-wrap {
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  overflow: hidden;
+  background: #0c0c12;
+}
+
+.admin-email-iframe {
+  width: 100%;
+  height: 640px;
+  border: 0;
+  display: block;
+}
+
+.admin-email-text {
+  margin: 0;
+  padding: 1.2rem 1.4rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: rgba(0, 0, 0, 0.2);
+  font-family: 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--muted-strong);
+}
+
 .admin-stage {
   min-width: 0;
 }
@@ -2102,6 +2237,7 @@ p {
   .principle-grid,
   .quote-meta-grid,
   .milestone-list,
+  .admin-email-layout,
   .document-grid {
     grid-template-columns: 1fr;
   }

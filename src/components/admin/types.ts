@@ -2,7 +2,12 @@ import type { AdminClientRecord, CreateClientInput } from '../../types.ts'
 import { formatDateTime } from '../../lib/formatting.ts'
 import type { AuditLogRecord } from '../../types.ts'
 
-export type AdminView = 'overview' | 'clients' | 'documents' | 'audit'
+export type AdminView =
+  | 'overview'
+  | 'clients'
+  | 'documents'
+  | 'audit'
+  | 'email-preview'
 export type AuditScopeFilter = 'all' | 'client_portal' | 'admin_console'
 export type AuditSubjectFilter = 'all' | 'selected'
 
@@ -43,6 +48,12 @@ export const adminViews: Array<{
     label: 'Audit',
     title: 'Activity log',
     detail: 'Portal behaviour and admin changes in one timeline.',
+  },
+  {
+    id: 'email-preview',
+    label: 'Email preview',
+    title: 'Transactional templates',
+    detail: 'Local rendering of client emails. Nothing is sent.',
   },
 ]
 
