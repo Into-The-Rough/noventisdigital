@@ -315,6 +315,33 @@ export async function updateInvoiceStatus(
   return result.invoice
 }
 
+export async function regenerateInvoicePdf(invoiceId: string): Promise<Invoice> {
+  const result = await invokeAdminAction<{ ok: true; invoice: Invoice }>(
+    'regenerateInvoicePdf',
+    { invoiceId },
+  )
+  if (!result.invoice) {
+    throw new Error('Invoice was not returned by the admin function.')
+  }
+  return result.invoice
+}
+
+export async function downloadInvoicePdfBlob(path: string): Promise<Blob> {
+  if (!supabase) {
+    throw new Error('Supabase is not configured.')
+  }
+
+  const { data, error } = await supabase.storage
+    .from('client-documents')
+    .download(path)
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}
+
 export async function toggleInvoiceVisibility(
   input: ToggleInvoiceVisibilityInput,
 ): Promise<Invoice> {

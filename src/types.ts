@@ -130,6 +130,7 @@ export type Invoice = {
   currency: string
   status: InvoiceStatus
   visibleToClient: boolean
+  pdfPath: string | null
   sentAt: string | null
   paidAt: string | null
   createdAt: string

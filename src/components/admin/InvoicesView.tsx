@@ -2,7 +2,9 @@ import type { ChangeEvent, FormEvent } from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   createInvoice,
+  downloadInvoicePdfBlob,
   listInvoices,
+  regenerateInvoicePdf,
   toggleInvoiceVisibility,
   updateInvoiceStatus,
 } from '../../lib/adminService.ts'
@@ -247,6 +249,45 @@ export function InvoicesView({
     }
   }
 
+  async function handleDownloadPdf(invoice: Invoice) {
+    if (!invoice.pdfPath) {
+      setError('This invoice does not have a stored PDF yet. Regenerate it first.')
+      return
+    }
+    setBusy(true)
+    setError(null)
+    try {
+      const blob = await downloadInvoicePdfBlob(invoice.pdfPath)
+      const url = URL.createObjectURL(blob)
+      const anchor = document.createElement('a')
+      anchor.href = url
+      anchor.download = `${invoice.invoiceNumber}.pdf`
+      document.body.appendChild(anchor)
+      anchor.click()
+      document.body.removeChild(anchor)
+      URL.revokeObjectURL(url)
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : 'Unable to download PDF.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function handleRegeneratePdf(invoice: Invoice) {
+    setBusy(true)
+    setError(null)
+    setStatusMessage(null)
+    try {
+      const updated = await regenerateInvoicePdf(invoice.id)
+      setStatusMessage(`Regenerated PDF for ${updated.invoiceNumber}.`)
+      await refresh()
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : 'Unable to regenerate PDF.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
   async function handleVisibilityToggle(invoice: Invoice) {
     setBusy(true)
     setError(null)
@@ -284,6 +325,8 @@ export function InvoicesView({
         onBack={onNavigateToList}
         onStatusChange={handleStatusChange}
         onVisibilityToggle={handleVisibilityToggle}
+        onDownloadPdf={handleDownloadPdf}
+        onRegeneratePdf={handleRegeneratePdf}
       />
     )
   }
@@ -563,6 +606,8 @@ type InvoiceDetailProps = {
   onBack: () => void
   onStatusChange: (invoice: Invoice, status: InvoiceStatus) => void
   onVisibilityToggle: (invoice: Invoice) => void
+  onDownloadPdf: (invoice: Invoice) => void
+  onRegeneratePdf: (invoice: Invoice) => void
 }
 
 function InvoiceDetail({
@@ -573,6 +618,8 @@ function InvoiceDetail({
   onBack,
   onStatusChange,
   onVisibilityToggle,
+  onDownloadPdf,
+  onRegeneratePdf,
 }: InvoiceDetailProps) {
   return (
     <div className="admin-view">
@@ -590,11 +637,20 @@ function InvoiceDetail({
             Back to list
           </button>
           <button
-            className="ghost-button"
-            onClick={() => window.print()}
+            className="primary-button"
+            disabled={busy || !invoice.pdfPath}
+            onClick={() => onDownloadPdf(invoice)}
             type="button"
           >
-            Print
+            Download PDF
+          </button>
+          <button
+            className="ghost-button"
+            disabled={busy}
+            onClick={() => onRegeneratePdf(invoice)}
+            type="button"
+          >
+            {invoice.pdfPath ? 'Regenerate PDF' : 'Generate PDF'}
           </button>
         </div>
       </div>

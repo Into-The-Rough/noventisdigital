@@ -2,6 +2,7 @@ import type { DragEvent, FormEvent } from 'react'
 import { useState } from 'react'
 import { formatDateTime } from '../../lib/formatting.ts'
 import type { AdminClientRecord } from '../../types.ts'
+import { ClientInvoicesPanel } from './ClientInvoicesPanel.tsx'
 import type { AdminView } from './types.ts'
 
 type DocumentsViewProps = {
@@ -32,6 +33,7 @@ type DocumentsViewProps = {
   onPackLabelAutoFill: (label: string) => void
   onUploadPack: (event: FormEvent<HTMLFormElement>) => void
   onSelectView: (view: AdminView) => void
+  onNavigateToInvoice: (invoiceId: string) => void
 }
 
 export function DocumentsView({
@@ -62,6 +64,7 @@ export function DocumentsView({
   onPackLabelAutoFill,
   onUploadPack,
   onSelectView,
+  onNavigateToInvoice,
 }: DocumentsViewProps) {
   const [isDragOver, setIsDragOver] = useState(false)
 
@@ -318,6 +321,13 @@ export function DocumentsView({
           Select a client from the directory before uploading private collateral.
         </div>
       )}
+
+      {selectedClient ? (
+        <ClientInvoicesPanel
+          clientId={selectedClient.id}
+          onNavigateToInvoice={onNavigateToInvoice}
+        />
+      ) : null}
     </div>
   )
 }

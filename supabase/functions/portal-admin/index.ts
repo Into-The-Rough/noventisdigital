@@ -1,6 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from '../_shared/cors.ts'
 import { renderWelcomeEmail } from '../_shared/emailTemplates.ts'
+import { buildInvoicePdf } from '../_shared/invoicePdf.ts'
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
 const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
@@ -805,11 +806,15 @@ type InvoiceRow = {
   currency: string | null
   status: string
   visible_to_client: boolean
+  pdf_path: string | null
   sent_at: string | null
   paid_at: string | null
   created_at: string
   updated_at: string
 }
+
+const INVOICE_SELECT =
+  'id, invoice_number, invoice_sequence, auth_user_id, client_name, client_company, client_email, billing_email, issue_date, due_date, line_items, notes, terms, subtotal, total_amount, currency, status, visible_to_client, pdf_path, sent_at, paid_at, created_at, updated_at'
 
 function serialiseInvoice(row: InvoiceRow) {
   const { items, subtotal } = normaliseInvoiceLineItems(row.line_items)
@@ -832,6 +837,7 @@ function serialiseInvoice(row: InvoiceRow) {
     currency: row.currency ?? 'GBP',
     status: row.status,
     visibleToClient: Boolean(row.visible_to_client),
+    pdfPath: row.pdf_path,
     sentAt: row.sent_at,
     paidAt: row.paid_at,
     createdAt: row.created_at,
@@ -839,11 +845,60 @@ function serialiseInvoice(row: InvoiceRow) {
   }
 }
 
+async function generateAndStoreInvoicePdf(
+  adminClient: ReturnType<typeof createAdminClient>,
+  invoice: ReturnType<typeof serialiseInvoice>,
+): Promise<string | null> {
+  if (!invoice.authUserId) {
+    return null
+  }
+
+  const pdfBytes = await buildInvoicePdf({
+    invoiceNumber: invoice.invoiceNumber,
+    clientName: invoice.clientName,
+    clientCompany: invoice.clientCompany,
+    billingEmail: invoice.billingEmail,
+    clientEmail: invoice.clientEmail,
+    issueDate: invoice.issueDate,
+    dueDate: invoice.dueDate,
+    lineItems: invoice.lineItems,
+    subtotal: invoice.subtotal,
+    totalAmount: invoice.totalAmount,
+    currency: invoice.currency,
+    notes: invoice.notes,
+    terms: invoice.terms,
+  })
+
+  const path = `${invoice.authUserId}/invoice-${invoice.invoiceNumber}.pdf`
+
+  const upload = await adminClient.storage
+    .from('client-documents')
+    .upload(path, pdfBytes, {
+      contentType: 'application/pdf',
+      upsert: true,
+    })
+
+  if (upload.error) {
+    throw upload.error
+  }
+
+  const { error: updateError } = await adminClient
+    .from('invoices')
+    .update({ pdf_path: path })
+    .eq('id', invoice.id)
+
+  if (updateError) {
+    throw updateError
+  }
+
+  return path
+}
+
 async function listInvoices(adminClient: ReturnType<typeof createAdminClient>) {
   const { data, error } = await adminClient
     .from('invoices')
     .select(
-      'id, invoice_number, invoice_sequence, auth_user_id, client_name, client_company, client_email, billing_email, issue_date, due_date, line_items, notes, terms, subtotal, total_amount, currency, status, visible_to_client, sent_at, paid_at, created_at, updated_at',
+      INVOICE_SELECT,
     )
     .order('invoice_sequence', { ascending: false })
 
@@ -904,7 +959,7 @@ async function handleCreateInvoice(
       visible_to_client: false,
     })
     .select(
-      'id, invoice_number, invoice_sequence, auth_user_id, client_name, client_company, client_email, billing_email, issue_date, due_date, line_items, notes, terms, subtotal, total_amount, currency, status, visible_to_client, sent_at, paid_at, created_at, updated_at',
+      INVOICE_SELECT,
     )
     .single()
 
@@ -914,12 +969,62 @@ async function handleCreateInvoice(
 
   const invoice = serialiseInvoice(data as InvoiceRow)
 
+  try {
+    const pdfPath = await generateAndStoreInvoicePdf(adminClient, invoice)
+    if (pdfPath) {
+      invoice.pdfPath = pdfPath
+    }
+  } catch (pdfError) {
+    console.error('Failed to generate invoice PDF', pdfError)
+  }
+
   await logAdminAudit(adminClient, actorUserId, 'invoice_created', {
     subjectUserId: authUserId,
     metadata: {
       invoiceId: invoice.id,
       invoiceNumber: invoice.invoiceNumber,
       totalAmount: invoice.totalAmount,
+      pdfPath: invoice.pdfPath,
+    },
+    request,
+  })
+
+  return jsonResponse({ ok: true, invoice })
+}
+
+async function handleRegenerateInvoicePdf(
+  adminClient: ReturnType<typeof createAdminClient>,
+  actorUserId: string,
+  payload: Record<string, unknown>,
+  request: Request,
+) {
+  const invoiceId = String(payload.invoiceId ?? '')
+  if (!invoiceId) {
+    throw new Error('Invoice id is required.')
+  }
+
+  const { data, error } = await adminClient
+    .from('invoices')
+    .select(INVOICE_SELECT)
+    .eq('id', invoiceId)
+    .single()
+
+  if (error || !data) {
+    throw error ?? new Error('Invoice not found.')
+  }
+
+  const invoice = serialiseInvoice(data as InvoiceRow)
+  const pdfPath = await generateAndStoreInvoicePdf(adminClient, invoice)
+  if (pdfPath) {
+    invoice.pdfPath = pdfPath
+  }
+
+  await logAdminAudit(adminClient, actorUserId, 'invoice_pdf_regenerated', {
+    subjectUserId: invoice.authUserId,
+    metadata: {
+      invoiceId: invoice.id,
+      invoiceNumber: invoice.invoiceNumber,
+      pdfPath: invoice.pdfPath,
     },
     request,
   })
@@ -957,7 +1062,7 @@ async function handleUpdateInvoiceStatus(
     .update(patch)
     .eq('id', invoiceId)
     .select(
-      'id, invoice_number, invoice_sequence, auth_user_id, client_name, client_company, client_email, billing_email, issue_date, due_date, line_items, notes, terms, subtotal, total_amount, currency, status, visible_to_client, sent_at, paid_at, created_at, updated_at',
+      INVOICE_SELECT,
     )
     .single()
 
@@ -998,7 +1103,7 @@ async function handleToggleInvoiceVisibility(
     .update({ visible_to_client: visible })
     .eq('id', invoiceId)
     .select(
-      'id, invoice_number, invoice_sequence, auth_user_id, client_name, client_company, client_email, billing_email, issue_date, due_date, line_items, notes, terms, subtotal, total_amount, currency, status, visible_to_client, sent_at, paid_at, created_at, updated_at',
+      INVOICE_SELECT,
     )
     .single()
 
@@ -1071,6 +1176,9 @@ Deno.serve(async (request) => {
 
       case 'createInvoice':
         return await handleCreateInvoice(adminClient, currentUser.id, payload, request)
+
+      case 'regenerateInvoicePdf':
+        return await handleRegenerateInvoicePdf(adminClient, currentUser.id, payload, request)
 
       case 'updateInvoiceStatus':
         return await handleUpdateInvoiceStatus(adminClient, currentUser.id, payload, request)

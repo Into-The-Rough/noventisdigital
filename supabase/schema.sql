@@ -421,6 +421,7 @@ create table if not exists public.invoices (
   currency text not null default 'GBP',
   status text not null default 'draft' check (status in ('draft', 'sent', 'paid', 'cancelled')),
   visible_to_client boolean not null default false,
+  pdf_path text,
   sent_at timestamptz,
   paid_at timestamptz,
   created_at timestamptz not null default now(),

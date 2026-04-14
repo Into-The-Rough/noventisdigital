@@ -261,6 +261,7 @@ export function AdminPage() {
                   onPackLabelAutoFill={data.setPackLabel}
                   onUploadPack={data.handleUploadPack}
                   onSelectView={(view) => navigateToView(view)}
+                  onNavigateToInvoice={(id) => navigate(`/admin/invoices/${id}`)}
                 />
               ) : null}
 
