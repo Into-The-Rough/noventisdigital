@@ -3099,8 +3099,27 @@ p {
     font-size: clamp(3.4rem, 18vw, 7rem);
   }
 
+  .capability-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    row-gap: 1rem;
+  }
+
+  .capability-card {
+    grid-row: auto;
+    grid-template-rows: none;
+  }
+
   .capability-card > h3 {
     font-size: 1.75rem;
+  }
+
+  .ambient-chip--7,
+  .ambient-chip--8,
+  .ambient-chip--9,
+  .ambient-chip--10,
+  .ambient-chip--11 {
+    display: none;
   }
 
   .pdf-frame-wrap,
