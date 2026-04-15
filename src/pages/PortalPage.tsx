@@ -1,6 +1,7 @@
 import type { DragEvent, FormEvent } from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import '../secure.css'
 import { demoCredentials } from '../data/demoPortal'
 import { usePortalSession } from '../hooks/usePortalSession'
 import { formatCurrency, formatDate, formatDateTime } from '../lib/formatting'

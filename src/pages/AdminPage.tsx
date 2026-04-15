@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import '../secure.css'
 import { AdminLoginScreen } from '../components/admin/AdminLoginScreen.tsx'
 import { AdminSidebar } from '../components/admin/AdminSidebar.tsx'
 import { AuditView } from '../components/admin/AuditView.tsx'
