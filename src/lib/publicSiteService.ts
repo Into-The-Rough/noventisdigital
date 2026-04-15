@@ -1,4 +1,4 @@
-import { supabaseUrl } from './supabase'
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 
 type ContactFormInput = {
   name: string

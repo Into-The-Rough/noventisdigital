@@ -2,6 +2,7 @@ import type { DragEvent, FormEvent } from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { demoCredentials } from '../data/demoPortal'
+import { usePortalSession } from '../hooks/usePortalSession'
 import { formatCurrency, formatDate, formatDateTime } from '../lib/formatting'
 import {
   downloadClientInvoicePdfBlob,
@@ -16,10 +17,7 @@ import {
 import type {
   ClientUpload,
   Invoice,
-  PortalClient,
-  PortalMode,
   QuoteAttachment,
-  QuoteDocument,
 } from '../types'
 
 function formatFileSize(size: number | null) {
@@ -35,16 +33,6 @@ function formatFileSize(size: number | null) {
   return `${(size / (1024 * 1024)).toFixed(1)} MB`
 }
 
-type PortalPageProps = {
-  client: PortalClient | null
-  quotes: QuoteDocument[]
-  booting: boolean
-  portalMode: PortalMode
-  quotesLoading: boolean
-  portalError: string | null
-  onLogin: (email: string, password: string) => Promise<void>
-  onLogout: () => Promise<void>
-}
 
 function buildMailtoLink(email: string, subject: string, body: string) {
   const params = new URLSearchParams({
@@ -90,18 +78,20 @@ function parsePortalLocation(pathname: string): {
   return { quoteIdFromUrl: quoteId, docIndexFromUrl: null }
 }
 
-export function PortalPage({
-  client,
-  quotes,
-  booting,
-  portalMode,
-  quotesLoading,
-  portalError,
-  onLogin,
-  onLogout,
-}: PortalPageProps) {
+export function PortalPage() {
   const location = useLocation()
   const navigate = useNavigate()
+
+  const {
+    client,
+    quotes,
+    booting,
+    portalMode,
+    quotesLoading,
+    portalError,
+    handleLogin: onLogin,
+    handleLogout: onLogout,
+  } = usePortalSession()
 
   const { quoteIdFromUrl, docIndexFromUrl } = useMemo(
     () => parsePortalLocation(location.pathname),
