@@ -1,14 +1,12 @@
 import type { DragEvent } from 'react'
 import { useState } from 'react'
-import type { AdminClientRecord, AdminUser } from '../../types.ts'
+import type { AdminClientRecord } from '../../types.ts'
 import type { AdminView } from './types.ts'
-import { adminViews, getClientLastSignInLabel } from './types.ts'
+import { getClientLastSignInLabel } from './types.ts'
 
 type AdminSidebarProps = {
-  admin: AdminUser
   clients: AdminClientRecord[]
   selectedClient: AdminClientRecord | null
-  activeView: AdminView
   loadingData: boolean
   quickUploadPending: boolean
   onSelectView: (view: AdminView) => void
@@ -17,10 +15,8 @@ type AdminSidebarProps = {
 }
 
 export function AdminSidebar({
-  admin,
   clients,
   selectedClient,
-  activeView,
   loadingData,
   quickUploadPending,
   onSelectView,
@@ -67,36 +63,9 @@ export function AdminSidebar({
 
   return (
     <aside className="admin-rail">
-      <article className="detail-card admin-session-card">
-        <p className="eyebrow">Admin session</p>
-        <div className="admin-session-meta">
-          <h1>{admin.name}</h1>
-          <p>{admin.email}</p>
-        </div>
-      </article>
-
-      <article className="detail-card">
-        <p className="eyebrow">Workspace</p>
-        <div className="admin-view-nav">
-          {adminViews.map((view) => (
-            <button
-              className={`admin-view-button ${
-                activeView === view.id ? 'is-active' : ''
-              }`}
-              key={view.id}
-              onClick={() => onSelectView(view.id)}
-              type="button"
-            >
-              <strong>{view.label}</strong>
-              <span>{view.detail}</span>
-            </button>
-          ))}
-        </div>
-      </article>
-
       <div className="list-card admin-directory-card">
         <div className="list-card-heading">
-          <h3>Client directory</h3>
+          <h3>Clients</h3>
           <span>{loadingData ? '...' : clients.length}</span>
         </div>
 
@@ -135,43 +104,38 @@ export function AdminSidebar({
         <p className="admin-directory-hint">
           {quickUploadPending
             ? 'Uploading dropped PDF...'
-            : 'Tip: drop a PDF onto a client to upload it instantly.'}
+            : 'Drop a PDF onto a client to upload instantly.'}
         </p>
       </div>
 
-      <article className="detail-card admin-current-client-card">
-        <p className="eyebrow">Current client</p>
-        {selectedClient ? (
-          <>
-            <div className="admin-client-context">
-              <h3>{selectedClient.company}</h3>
-              <p>
-                {selectedClient.name} · {selectedClient.role}
-              </p>
-              <p>{selectedClient.email}</p>
-            </div>
+      {selectedClient ? (
+        <article className="detail-card admin-current-client-card">
+          <p className="eyebrow">Selected</p>
+          <div className="admin-client-context">
+            <h3>{selectedClient.company}</h3>
+            <p>
+              {selectedClient.name} · {selectedClient.role}
+            </p>
+          </div>
 
-            <div className="admin-rail-actions">
-              <button
-                className="ghost-button"
-                onClick={() => onSelectView('clients')}
-                type="button"
-              >
-                Edit account
-              </button>
-              <button
-                className="ghost-button"
-                onClick={() => onSelectView('documents')}
-                type="button"
-              >
-                Manage packs
-              </button>
-            </div>
-          </>
-        ) : (
-          <p>Select a client from the directory to start editing.</p>
-        )}
-      </article>
+          <div className="admin-rail-actions">
+            <button
+              className="ghost-button"
+              onClick={() => onSelectView('clients')}
+              type="button"
+            >
+              Edit
+            </button>
+            <button
+              className="ghost-button"
+              onClick={() => onSelectView('documents')}
+              type="button"
+            >
+              Packs
+            </button>
+          </div>
+        </article>
+      ) : null}
     </aside>
   )
 }

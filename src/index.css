@@ -1478,7 +1478,6 @@ p {
 .admin-rail,
 .admin-stage,
 .admin-view,
-.admin-view-nav,
 .admin-form-card,
 .admin-create-card,
 .admin-column-stack,
@@ -1507,28 +1506,6 @@ p {
   border-radius: 1.2rem;
 }
 
-.admin-session-card {
-  position: relative;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at top right, rgba(236, 225, 210, 0.12), transparent 34%),
-    linear-gradient(180deg, rgba(255, 250, 244, 0.055), rgba(255, 250, 244, 0.025));
-}
-
-.admin-session-meta {
-  display: grid;
-  gap: 0.25rem;
-}
-
-.admin-session-meta h1 {
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
-}
-
-.admin-view-nav {
-  gap: 0.4rem;
-}
-
-.admin-view-button,
 .admin-action-card,
 .admin-filter-button,
 .admin-simple-list-item {
@@ -1543,7 +1520,6 @@ p {
     background-color 180ms ease;
 }
 
-.admin-view-button:hover,
 .admin-action-card:hover,
 .admin-filter-button:hover,
 .admin-simple-list-item:hover {
@@ -1551,22 +1527,6 @@ p {
   border-color: var(--line-strong);
 }
 
-.admin-view-button {
-  display: grid;
-  gap: 0.2rem;
-  padding: 0.7rem 0.85rem;
-}
-
-.admin-view-button strong {
-  font-size: 0.9rem;
-}
-
-.admin-view-button span {
-  color: var(--muted);
-  font-size: 0.82rem;
-}
-
-.admin-view-button.is-active,
 .admin-filter-button.is-active {
   background: rgba(236, 225, 210, 0.08);
   border-color: var(--line-strong);
@@ -2382,6 +2342,47 @@ p {
 .admin-stage .detail-card {
   padding: 1.1rem;
   border-radius: 1.2rem;
+}
+
+.admin-tab-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-tab {
+  padding: 0.45rem 0.85rem;
+  border-radius: 0.6rem;
+  border: 1px solid transparent;
+  background: none;
+  color: var(--muted-strong);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease;
+}
+
+.admin-tab:hover {
+  background: rgba(236, 225, 210, 0.06);
+  color: var(--text);
+}
+
+.admin-tab.is-active {
+  background: rgba(236, 225, 210, 0.1);
+  border-color: var(--line-strong);
+  color: var(--text);
+}
+
+.admin-tab-bar-session {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
 }
 
 .admin-stage-header {

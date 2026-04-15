@@ -166,10 +166,8 @@ export function AdminPage() {
         ) : (
           <section className="admin-console">
             <AdminSidebar
-              admin={auth.admin}
               clients={data.clients}
               selectedClient={data.selectedClient}
-              activeView={activeView}
               loadingData={data.loadingData}
               quickUploadPending={data.quickUploadPending}
               onSelectView={(view) => navigateToView(view)}
@@ -180,6 +178,22 @@ export function AdminPage() {
             />
 
             <div className="admin-stage">
+              <nav className="admin-tab-bar">
+                {adminViews.map((view) => (
+                  <button
+                    className={`admin-tab ${activeView === view.id ? 'is-active' : ''}`}
+                    key={view.id}
+                    onClick={() => navigateToView(view.id)}
+                    type="button"
+                  >
+                    {view.label}
+                  </button>
+                ))}
+                <span className="admin-tab-bar-session">
+                  {auth.admin.name}
+                </span>
+              </nav>
+
               {localError ? <div className="error-banner">{localError}</div> : null}
               {statusMessage ? <div className="notice-banner">{statusMessage}</div> : null}
 
