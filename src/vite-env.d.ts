@@ -8,3 +8,6 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv
 }
+
+declare module '@fontsource-variable/fraunces'
+declare module '@fontsource/manrope/*'

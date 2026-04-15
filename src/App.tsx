@@ -1,10 +1,17 @@
 import type { Dispatch, SetStateAction } from 'react'
-import { startTransition, useEffect, useState } from 'react'
+import { lazy, startTransition, Suspense, useEffect, useState } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { HomePage } from './pages/HomePage'
-import { AdminPage } from './pages/AdminPage'
-import { PortalPage } from './pages/PortalPage'
-import { PrivacyPage } from './pages/PrivacyPage'
+
+const AdminPage = lazy(() =>
+  import('./pages/AdminPage').then((module) => ({ default: module.AdminPage })),
+)
+const PortalPage = lazy(() =>
+  import('./pages/PortalPage').then((module) => ({ default: module.PortalPage })),
+)
+const PrivacyPage = lazy(() =>
+  import('./pages/PrivacyPage').then((module) => ({ default: module.PrivacyPage })),
+)
 import {
   getCurrentClient,
   getQuotesForClient,
@@ -290,27 +297,29 @@ function App() {
   return (
     <>
       <RouteMetadata />
-      <Routes location={location}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/privacy" element={<PrivacyPage />} />
-        <Route path="/admin/*" element={<AdminPage />} />
-        <Route
-          path="/portal/*"
-          element={
-            <PortalPage
-              client={client}
-              quotes={quotes}
-              booting={booting}
-              portalMode={portalMode}
-              quotesLoading={quotesLoading}
-              portalError={portalError}
-              onLogin={handleLogin}
-              onLogout={handleLogout}
-            />
-          }
-        />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <Suspense fallback={<div className="loading-panel">Loading...</div>}>
+        <Routes location={location}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/admin/*" element={<AdminPage />} />
+          <Route
+            path="/portal/*"
+            element={
+              <PortalPage
+                client={client}
+                quotes={quotes}
+                booting={booting}
+                portalMode={portalMode}
+                quotesLoading={quotesLoading}
+                portalError={portalError}
+                onLogin={handleLogin}
+                onLogout={handleLogout}
+              />
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </>
   )
 }
