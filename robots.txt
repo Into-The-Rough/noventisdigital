@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /portal
+Disallow: /portal/
+Disallow: /review
+Disallow: /review/
+
+Sitemap: https://noventisdigital.co.uk/sitemap.xml
