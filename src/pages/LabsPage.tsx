@@ -13,6 +13,9 @@ const EXPERIMENTS: Experiment[] = [
   { id: 'glyph', name: 'Morphing glyph', src: '/previews/glyph.html' },
   { id: 'snake', name: 'Snake playing itself', src: '/previews/snake.html' },
   { id: 'pacman', name: 'Pac-Man playing itself', src: '/previews/pacman.html' },
+  { id: 'hacking', name: 'Terminal hack', src: '/previews/hacking.html' },
+  { id: 'special', name: 'S.P.E.C.I.A.L.', src: '/previews/special.html' },
+  { id: 'lockpick', name: 'Lockpicking', src: '/previews/lockpick.html' },
 ]
 
 const LAST_KEY = 'noventis-labs-last'
